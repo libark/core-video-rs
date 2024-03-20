@@ -1,0 +1,135 @@
+use core_foundation::{
+    base::{kCFAllocatorDefault, CFAllocatorRef, CFType, CFTypeID, TCFType},
+    dictionary::{CFDictionary, CFDictionaryRef},
+    string::{CFString, CFStringRef},
+};
+use libc::c_void;
+
+use crate::{
+    base::CVOptionFlags,
+    pixel_buffer::{CVPixelBuffer, CVPixelBufferRef},
+    return_::{kCVReturnSuccess, CVReturn},
+};
+
+#[repr(C)]
+pub struct __CVPixelBufferPool(c_void);
+
+pub type CVPixelBufferPoolRef = *const __CVPixelBufferPool;
+
+pub type CVPixelBufferPoolFlushFlags = CVOptionFlags;
+
+pub const kCVPixelBufferPoolFlushExcessBuffers: CVPixelBufferPoolFlushFlags = 1;
+
+extern "C" {
+    pub static kCVPixelBufferPoolMinimumBufferCountKey: CFStringRef;
+    pub static kCVPixelBufferPoolMaximumBufferAgeKey: CFStringRef;
+
+    pub static kCVPixelBufferPoolAllocationThresholdKey: CFStringRef;
+    pub static kCVPixelBufferPoolFreeBufferNotification: CFStringRef;
+
+    pub fn CVPixelBufferPoolGetTypeID() -> CFTypeID;
+    pub fn CVPixelBufferPoolRetain(pixelBufferPool: CVPixelBufferPoolRef) -> CVPixelBufferPoolRef;
+    pub fn CVPixelBufferPoolRelease(pixelBufferPool: CVPixelBufferPoolRef);
+    pub fn CVPixelBufferPoolCreate(
+        allocator: CFAllocatorRef,
+        poolAttributes: CFDictionaryRef,
+        pixelBufferAttributes: CFDictionaryRef,
+        poolOut: *mut CVPixelBufferPoolRef,
+    ) -> CVReturn;
+    pub fn CVPixelBufferPoolGetAttributes(pool: CVPixelBufferPoolRef) -> CFDictionaryRef;
+    pub fn CVPixelBufferPoolGetPixelBufferAttributes(pool: CVPixelBufferPoolRef) -> CFDictionaryRef;
+    pub fn CVPixelBufferPoolCreatePixelBuffer(
+        allocator: CFAllocatorRef,
+        pixelBufferPool: CVPixelBufferPoolRef,
+        pixelBufferOut: *mut CVPixelBufferRef,
+    ) -> CVReturn;
+    pub fn CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(
+        allocator: CFAllocatorRef,
+        pixelBufferPool: CVPixelBufferPoolRef,
+        auxAttributes: CFDictionaryRef,
+        pixelBufferOut: *mut CVPixelBufferRef,
+    ) -> CVReturn;
+    pub fn CVPixelBufferPoolFlush(pool: CVPixelBufferPoolRef, options: CVPixelBufferPoolFlushFlags);
+}
+
+pub struct CVPixelBufferPool(CVPixelBufferPoolRef);
+
+impl Drop for CVPixelBufferPool {
+    fn drop(&mut self) {
+        unsafe { CVPixelBufferPoolRelease(self.0) }
+    }
+}
+
+impl_TCFType!(CVPixelBufferPool, CVPixelBufferPoolRef, CVPixelBufferPoolGetTypeID);
+impl_CFTypeDescription!(CVPixelBufferPool);
+
+impl CVPixelBufferPool {
+    pub fn new(
+        pool_attributes: &CFDictionary<CFString, CFType>,
+        pixel_buffer_attributes: &CFDictionary<CFString, CFType>,
+    ) -> Result<CVPixelBufferPool, CVReturn> {
+        let mut pool: CVPixelBufferPoolRef = std::ptr::null_mut();
+        let status = unsafe {
+            CVPixelBufferPoolCreate(
+                kCFAllocatorDefault,
+                pool_attributes.as_concrete_TypeRef(),
+                pixel_buffer_attributes.as_concrete_TypeRef(),
+                &mut pool,
+            )
+        };
+        if status == kCVReturnSuccess {
+            Ok(unsafe { TCFType::wrap_under_create_rule(pool) })
+        } else {
+            Err(status)
+        }
+    }
+
+    pub fn get_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
+        unsafe {
+            let attributes = CVPixelBufferPoolGetAttributes(self.as_concrete_TypeRef());
+            if attributes.is_null() {
+                None
+            } else {
+                Some(TCFType::wrap_under_create_rule(attributes))
+            }
+        }
+    }
+
+    pub fn get_pixel_buffer_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
+        unsafe {
+            let attributes = CVPixelBufferPoolGetPixelBufferAttributes(self.as_concrete_TypeRef());
+            if attributes.is_null() {
+                None
+            } else {
+                Some(TCFType::wrap_under_create_rule(attributes))
+            }
+        }
+    }
+
+    pub fn create_pixel_buffer(&self) -> Result<CVPixelBuffer, CVReturn> {
+        let mut pixel_buffer: CVPixelBufferRef = std::ptr::null_mut();
+        let status = unsafe { CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, self.as_concrete_TypeRef(), &mut pixel_buffer) };
+        if status == kCVReturnSuccess {
+            Ok(unsafe { TCFType::wrap_under_create_rule(pixel_buffer) })
+        } else {
+            Err(status)
+        }
+    }
+
+    pub fn create_pixel_buffer_with_aux_attributes(&self, auxAttributes: &CFDictionary<CFString, CFType>) -> Result<CVPixelBuffer, CVReturn> {
+        let mut pixel_buffer: CVPixelBufferRef = std::ptr::null_mut();
+        let status = unsafe {
+            CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(
+                kCFAllocatorDefault,
+                self.as_concrete_TypeRef(),
+                auxAttributes.as_concrete_TypeRef(),
+                &mut pixel_buffer,
+            )
+        };
+        if status == kCVReturnSuccess {
+            Ok(unsafe { TCFType::wrap_under_create_rule(pixel_buffer) })
+        } else {
+            Err(status)
+        }
+    }
+}
