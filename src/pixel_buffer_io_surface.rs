@@ -1,3 +1,5 @@
+use std::ptr::{null, null_mut};
+
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
@@ -28,10 +30,15 @@ extern "C" {
 }
 
 impl CVPixelBuffer {
-    pub fn from_io_surface(io_surface: IOSurface, options: &CFDictionary<CFType, CFType>) -> Result<CVPixelBuffer, CVReturn> {
-        let mut pixel_buffer: CVPixelBufferRef = std::ptr::null_mut();
+    pub fn from_io_surface(io_surface: &IOSurface, options: Option<&CFDictionary<CFType, CFType>>) -> Result<CVPixelBuffer, CVReturn> {
+        let mut pixel_buffer: CVPixelBufferRef = null_mut();
         let status = unsafe {
-            CVPixelBufferCreateWithIOSurface(kCFAllocatorDefault, io_surface.as_concrete_TypeRef(), options.as_concrete_TypeRef(), &mut pixel_buffer)
+            CVPixelBufferCreateWithIOSurface(
+                kCFAllocatorDefault,
+                io_surface.as_concrete_TypeRef(),
+                options.map_or(null(), |options| options.as_concrete_TypeRef()),
+                &mut pixel_buffer,
+            )
         };
         if status == kCVReturnSuccess {
             Ok(unsafe { TCFType::wrap_under_create_rule(pixel_buffer) })

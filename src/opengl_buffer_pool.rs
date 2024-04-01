@@ -1,3 +1,5 @@
+use std::ptr::{null, null_mut};
+
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, CFTypeID, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
@@ -50,15 +52,15 @@ impl_CFTypeDescription!(CVOpenGLBufferPool);
 
 impl CVOpenGLBufferPool {
     pub fn new(
-        pool_attributes: &CFDictionary<CFString, CFType>,
-        opengl_buffer_attributes: &CFDictionary<CFString, CFType>,
+        pool_attributes: Option<&CFDictionary<CFString, CFType>>,
+        opengl_buffer_attributes: Option<&CFDictionary<CFString, CFType>>,
     ) -> Result<CVOpenGLBufferPool, CVReturn> {
-        let mut pool: CVOpenGLBufferPoolRef = std::ptr::null_mut();
+        let mut pool: CVOpenGLBufferPoolRef = null_mut();
         let status = unsafe {
             CVOpenGLBufferPoolCreate(
                 kCFAllocatorDefault,
-                pool_attributes.as_concrete_TypeRef(),
-                opengl_buffer_attributes.as_concrete_TypeRef(),
+                pool_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
+                opengl_buffer_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 &mut pool,
             )
         };
@@ -92,7 +94,7 @@ impl CVOpenGLBufferPool {
     }
 
     pub fn create_open_gl_buffer(&self) -> Result<CVOpenGLBuffer, CVReturn> {
-        let mut buffer: CVOpenGLBufferRef = std::ptr::null_mut();
+        let mut buffer: CVOpenGLBufferRef = null_mut();
         let status = unsafe { CVOpenGLBufferPoolCreateOpenGLBuffer(kCFAllocatorDefault, self.0, &mut buffer) };
         if status == kCVReturnSuccess {
             Ok(unsafe { TCFType::wrap_under_create_rule(buffer) })

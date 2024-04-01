@@ -1,3 +1,5 @@
+use std::ptr::{null, null_mut};
+
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, CFTypeID, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
@@ -59,17 +61,17 @@ impl_CFTypeDescription!(CVOpenGLESTextureCache);
 
 impl CVOpenGLESTextureCache {
     pub fn new(
-        cache_attributes: &CFDictionary<CFString, CFType>,
+        cache_attributes: Option<&CFDictionary<CFString, CFType>>,
         eagl_context: CVEAGLContext,
-        texture_attributes: &CFDictionary<CFString, CFType>,
+        texture_attributes: Option<&CFDictionary<CFString, CFType>>,
     ) -> Result<CVOpenGLESTextureCache, CVReturn> {
-        let mut cache: CVOpenGLESTextureCacheRef = std::ptr::null_mut();
+        let mut cache: CVOpenGLESTextureCacheRef = null_mut();
         let status = unsafe {
             CVOpenGLESTextureCacheCreate(
                 kCFAllocatorDefault,
-                cache_attributes.as_concrete_TypeRef(),
+                cache_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 eagl_context,
-                texture_attributes.as_concrete_TypeRef(),
+                texture_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 &mut cache,
             )
         };
@@ -82,8 +84,8 @@ impl CVOpenGLESTextureCache {
 
     pub fn create_texture_from_image(
         &self,
-        source_image: CVImageBuffer,
-        texture_attributes: &CFDictionary<CFString, CFType>,
+        source_image: &CVImageBuffer,
+        texture_attributes: Option<&CFDictionary<CFString, CFType>>,
         target: GLenum,
         internal_format: GLint,
         width: GLsizei,
@@ -92,13 +94,13 @@ impl CVOpenGLESTextureCache {
         type_: GLenum,
         plane_index: size_t,
     ) -> Result<CVOpenGLESTexture, CVReturn> {
-        let mut texture: CVOpenGLESTextureRef = std::ptr::null_mut();
+        let mut texture: CVOpenGLESTextureRef = null_mut();
         let status = unsafe {
             CVOpenGLESTextureCacheCreateTextureFromImage(
                 kCFAllocatorDefault,
                 self.as_concrete_TypeRef(),
                 source_image.as_concrete_TypeRef(),
-                texture_attributes.as_concrete_TypeRef(),
+                texture_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 target,
                 internal_format,
                 width,

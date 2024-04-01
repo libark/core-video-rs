@@ -1,3 +1,5 @@
+use std::ptr::{null, null_mut};
+
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, CFTypeID, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
@@ -49,9 +51,11 @@ impl_TCFType!(CVOpenGLBuffer, CVOpenGLBufferRef, CVOpenGLBufferGetTypeID);
 impl_CFTypeDescription!(CVOpenGLBuffer);
 
 impl CVOpenGLBuffer {
-    pub fn create(width: size_t, height: size_t, attributes: &CFDictionary<CFString, CFType>) -> Result<CVOpenGLBuffer, CVReturn> {
-        let mut buffer: CVOpenGLBufferRef = std::ptr::null_mut();
-        let status = unsafe { CVOpenGLBufferCreate(kCFAllocatorDefault, width, height, attributes.as_concrete_TypeRef(), &mut buffer) };
+    pub fn new(width: size_t, height: size_t, attributes: Option<&CFDictionary<CFString, CFType>>) -> Result<CVOpenGLBuffer, CVReturn> {
+        let mut buffer: CVOpenGLBufferRef = null_mut();
+        let status = unsafe {
+            CVOpenGLBufferCreate(kCFAllocatorDefault, width, height, attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()), &mut buffer)
+        };
         if status == kCVReturnSuccess {
             Ok(unsafe { TCFType::wrap_under_create_rule(buffer) })
         } else {
@@ -70,7 +74,7 @@ impl CVOpenGLBuffer {
         }
     }
 
-    pub fn attach(&self, cgl_context: CGLContextObj, face: GLenum, level: GLint, screen: GLint) -> Result<(), CVReturn> {
+    pub unsafe fn attach(&self, cgl_context: CGLContextObj, face: GLenum, level: GLint, screen: GLint) -> Result<(), CVReturn> {
         let status = unsafe { CVOpenGLBufferAttach(self.as_concrete_TypeRef(), cgl_context, face, level, screen) };
         if status == kCVReturnSuccess {
             Ok(())

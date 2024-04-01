@@ -1,3 +1,5 @@
+use std::ptr::{null, null_mut};
+
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, CFTypeID, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
@@ -50,17 +52,17 @@ impl_CFTypeDescription!(CVMetalTextureCache);
 
 impl CVMetalTextureCache {
     pub fn new(
-        cache_attributes: &CFDictionary<CFString, CFType>,
+        cache_attributes: Option<&CFDictionary<CFString, CFType>>,
         metal_device: metal::Device,
-        texture_attributes: &CFDictionary<CFString, CFType>,
+        texture_attributes: Option<&CFDictionary<CFString, CFType>>,
     ) -> Result<CVMetalTextureCache, CVReturn> {
-        let mut cache: CVMetalTextureCacheRef = std::ptr::null_mut();
+        let mut cache: CVMetalTextureCacheRef = null_mut();
         let status = unsafe {
             CVMetalTextureCacheCreate(
                 kCFAllocatorDefault,
-                cache_attributes.as_concrete_TypeRef(),
+                cache_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 metal_device,
-                texture_attributes.as_concrete_TypeRef(),
+                texture_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 &mut cache,
             )
         };
@@ -74,19 +76,19 @@ impl CVMetalTextureCache {
     pub fn create_texture_from_image(
         &self,
         source_image: CVImageBufferRef,
-        texture_attributes: &CFDictionary<CFString, CFType>,
+        texture_attributes: Option<&CFDictionary<CFString, CFType>>,
         pixel_format: metal::MTLPixelFormat,
         width: size_t,
         height: size_t,
         plane_index: size_t,
     ) -> Result<CVMetalTexture, CVReturn> {
-        let mut texture: CVMetalTextureRef = std::ptr::null_mut();
+        let mut texture: CVMetalTextureRef = null_mut();
         let status = unsafe {
             CVMetalTextureCacheCreateTextureFromImage(
                 kCFAllocatorDefault,
                 self.as_concrete_TypeRef(),
                 source_image,
-                texture_attributes.as_concrete_TypeRef(),
+                texture_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 pixel_format,
                 width,
                 height,

@@ -1,3 +1,5 @@
+use std::ptr::{null, null_mut};
+
 use block::{Block, ConcreteBlock};
 use core_foundation::base::{Boolean, CFIndex, CFTypeID, TCFType};
 use core_graphics::display::CGDirectDisplayID;
@@ -74,7 +76,7 @@ pub type CVDisplayLinkOutputClosure = dyn Fn(&CVDisplayLink, &CVTimeStamp, &CVTi
 
 impl CVDisplayLink {
     pub fn from_cg_displays(display_array: &[CGDirectDisplayID]) -> Result<CVDisplayLink, CVReturn> {
-        let mut display_link = std::ptr::null_mut();
+        let mut display_link = null_mut();
         unsafe {
             let result = CVDisplayLinkCreateWithCGDisplays(display_array.as_ptr(), display_array.len() as CFIndex, &mut display_link);
             if result == kCVReturnSuccess {
@@ -86,7 +88,7 @@ impl CVDisplayLink {
     }
 
     pub fn from_opengl_display_mask(mask: CGOpenGLDisplayMask) -> Result<CVDisplayLink, CVReturn> {
-        let mut display_link = std::ptr::null_mut();
+        let mut display_link = null_mut();
         unsafe {
             let result = CVDisplayLinkCreateWithOpenGLDisplayMask(mask, &mut display_link);
             if result == kCVReturnSuccess {
@@ -98,7 +100,7 @@ impl CVDisplayLink {
     }
 
     pub fn from_cg_display(display_id: CGDirectDisplayID) -> Result<CVDisplayLink, CVReturn> {
-        let mut display_link = std::ptr::null_mut();
+        let mut display_link = null_mut();
         unsafe {
             let result = CVDisplayLinkCreateWithCGDisplay(display_id, &mut display_link);
             if result == kCVReturnSuccess {
@@ -110,7 +112,7 @@ impl CVDisplayLink {
     }
 
     pub fn from_active_cg_displays() -> Result<CVDisplayLink, CVReturn> {
-        let mut display_link = std::ptr::null_mut();
+        let mut display_link = null_mut();
         unsafe {
             let result = CVDisplayLinkCreateWithActiveCGDisplays(&mut display_link);
             if result == kCVReturnSuccess {
@@ -130,12 +132,12 @@ impl CVDisplayLink {
         }
     }
 
-    pub fn set_current_cg_display_from_opengl_context(
+    pub unsafe fn set_current_cg_display_from_opengl_context(
         &self,
         cgl_context: CGLContextObj,
-        cgl_pixel_format_obj: CGLPixelFormatObj,
+        cgl_pixel_format: CGLPixelFormatObj,
     ) -> Result<(), CVReturn> {
-        let result = unsafe { CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(self.as_concrete_TypeRef(), cgl_context, cgl_pixel_format_obj) };
+        let result = unsafe { CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(self.as_concrete_TypeRef(), cgl_context, cgl_pixel_format) };
         if result == kCVReturnSuccess {
             Ok(())
         } else {
@@ -170,7 +172,7 @@ impl CVDisplayLink {
                 Err(result)
             }
         } else {
-            let result = unsafe { CVDisplayLinkSetOutputHandler(self.as_concrete_TypeRef(), std::ptr::null()) };
+            let result = unsafe { CVDisplayLinkSetOutputHandler(self.as_concrete_TypeRef(), null()) };
             if result == kCVReturnSuccess {
                 Ok(())
             } else {

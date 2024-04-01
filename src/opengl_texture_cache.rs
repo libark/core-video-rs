@@ -1,3 +1,5 @@
+use std::ptr::{null, null_mut};
+
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, CFTypeID, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
@@ -57,20 +59,20 @@ impl_TCFType!(CVOpenGLTextureCache, CVOpenGLTextureCacheRef, CVOpenGLTextureCach
 impl_CFTypeDescription!(CVOpenGLTextureCache);
 
 impl CVOpenGLTextureCache {
-    pub fn new(
-        cache_attributes: &CFDictionary<CFString, CFString>,
+    pub unsafe fn new(
+        cache_attributes: Option<&CFDictionary<CFString, CFString>>,
         cgl_context: CGLContextObj,
         cgl_pixel_format: CGLPixelFormatObj,
-        texture_attributes: &CFDictionary<CFString, CFType>,
+        texture_attributes: Option<&CFDictionary<CFString, CFType>>,
     ) -> Result<CVOpenGLTextureCache, CVReturn> {
-        let mut cache: CVOpenGLTextureCacheRef = std::ptr::null_mut();
+        let mut cache: CVOpenGLTextureCacheRef = null_mut();
         let status = unsafe {
             CVOpenGLTextureCacheCreate(
                 kCFAllocatorDefault,
-                cache_attributes.as_concrete_TypeRef(),
+                cache_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 cgl_context,
                 cgl_pixel_format,
-                texture_attributes.as_concrete_TypeRef(),
+                texture_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 &mut cache,
             )
         };
@@ -83,16 +85,16 @@ impl CVOpenGLTextureCache {
 
     pub fn create_texture_from_image(
         &self,
-        source_image: CVImageBuffer,
-        attributes: &CFDictionary<CFString, CFType>,
+        source_image: &CVImageBuffer,
+        attributes: Option<&CFDictionary<CFString, CFType>>,
     ) -> Result<CVOpenGLTexture, CVReturn> {
-        let mut texture: CVOpenGLTextureRef = std::ptr::null_mut();
+        let mut texture: CVOpenGLTextureRef = null_mut();
         let status = unsafe {
             CVOpenGLTextureCacheCreateTextureFromImage(
                 kCFAllocatorDefault,
                 self.as_concrete_TypeRef(),
                 source_image.as_concrete_TypeRef(),
-                attributes.as_concrete_TypeRef(),
+                attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 &mut texture,
             )
         };

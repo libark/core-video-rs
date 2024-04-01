@@ -1,3 +1,5 @@
+use std::ptr::{null, null_mut};
+
 use core_foundation::{
     array::CFArrayRef,
     base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFType, CFTypeID, TCFType},
@@ -281,10 +283,23 @@ impl_TCFType!(CVPixelBuffer, CVPixelBufferRef, CVPixelBufferGetTypeID);
 impl_CFTypeDescription!(CVPixelBuffer);
 
 impl CVPixelBuffer {
-    pub fn new(pixel_format: OSType, width: usize, height: usize, options: &CFDictionary<CFString, CFType>) -> Result<CVPixelBuffer, CVReturn> {
-        let mut pixel_buffer: CVPixelBufferRef = std::ptr::null_mut();
-        let status =
-            unsafe { CVPixelBufferCreate(kCFAllocatorDefault, width, height, pixel_format, options.as_concrete_TypeRef(), &mut pixel_buffer) };
+    pub fn new(
+        pixel_format: OSType,
+        width: usize,
+        height: usize,
+        options: Option<&CFDictionary<CFString, CFType>>,
+    ) -> Result<CVPixelBuffer, CVReturn> {
+        let mut pixel_buffer: CVPixelBufferRef = null_mut();
+        let status = unsafe {
+            CVPixelBufferCreate(
+                kCFAllocatorDefault,
+                width,
+                height,
+                pixel_format,
+                options.map_or(null(), |options| options.as_concrete_TypeRef()),
+                &mut pixel_buffer,
+            )
+        };
         if status == kCVReturnSuccess {
             Ok(unsafe { TCFType::wrap_under_create_rule(pixel_buffer) })
         } else {
