@@ -72,8 +72,6 @@ impl Drop for CVDisplayLink {
 impl_TCFType!(CVDisplayLink, CVDisplayLinkRef, CVDisplayLinkGetTypeID);
 impl_CFTypeDescription!(CVDisplayLink);
 
-pub type CVDisplayLinkOutputClosure = dyn Fn(&CVDisplayLink, &CVTimeStamp, &CVTimeStamp, CVOptionFlags, &mut CVOptionFlags) -> CVReturn + 'static;
-
 impl CVDisplayLink {
     pub fn from_cg_displays(display_array: &[CGDirectDisplayID]) -> Result<CVDisplayLink, CVReturn> {
         let mut display_link = null_mut();
@@ -149,9 +147,21 @@ impl CVDisplayLink {
         unsafe { CVDisplayLinkGetCurrentCGDisplay(self.as_concrete_TypeRef()) }
     }
 
-    pub fn set_output_closure(&self, closure: Option<&CVDisplayLinkOutputClosure>) -> Result<(), CVReturn> {
-        if let Some(closure) = closure {
-            let handler = ConcreteBlock::new(
+    pub unsafe fn set_output_callback(&self, callback: CVDisplayLinkOutputCallback, user_info: *mut c_void) -> Result<(), CVReturn> {
+        let result = unsafe { CVDisplayLinkSetOutputCallback(self.as_concrete_TypeRef(), callback, user_info) };
+        if result == kCVReturnSuccess {
+            Ok(())
+        } else {
+            Err(result)
+        }
+    }
+
+    pub fn set_output_closure<F>(&self, closure: Option<F>) -> Result<(), CVReturn>
+    where
+        F: Fn(&CVDisplayLink, &CVTimeStamp, &CVTimeStamp, CVOptionFlags, &mut CVOptionFlags) -> CVReturn + 'static,
+    {
+        let handler = closure.map(|closure| {
+            ConcreteBlock::new(
                 move |display_link: CVDisplayLinkRef,
                       in_now: *const CVTimeStamp,
                       in_output_time: *const CVTimeStamp,
@@ -164,20 +174,14 @@ impl CVDisplayLink {
                     let flags_out = unsafe { &mut *flags_out };
                     closure(&display_link, &in_now, &in_output_time, flags_in, flags_out)
                 },
-            );
-            let result = unsafe { CVDisplayLinkSetOutputHandler(self.as_concrete_TypeRef(), &*handler) };
-            if result == kCVReturnSuccess {
-                Ok(())
-            } else {
-                Err(result)
-            }
+            )
+            .copy()
+        });
+        let result = unsafe { CVDisplayLinkSetOutputHandler(self.as_concrete_TypeRef(), handler.as_ref().map_or(null(), |h| &**h)) };
+        if result == kCVReturnSuccess {
+            Ok(())
         } else {
-            let result = unsafe { CVDisplayLinkSetOutputHandler(self.as_concrete_TypeRef(), null()) };
-            if result == kCVReturnSuccess {
-                Ok(())
-            } else {
-                Err(result)
-            }
+            Err(result)
         }
     }
 
@@ -211,8 +215,8 @@ impl CVDisplayLink {
         unsafe { CVDisplayLinkGetActualOutputVideoRefreshPeriod(self.as_concrete_TypeRef()) }
     }
 
-    pub fn is_running(&self) -> Boolean {
-        unsafe { CVDisplayLinkIsRunning(self.as_concrete_TypeRef()) }
+    pub fn is_running(&self) -> bool {
+        unsafe { CVDisplayLinkIsRunning(self.as_concrete_TypeRef()) != 0 }
     }
 
     pub fn get_current_time(&self) -> Result<CVTime, CVReturn> {
