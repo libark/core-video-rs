@@ -16,7 +16,7 @@ use crate::{
 #[repr(C)]
 pub struct __CVPixelBufferPool(c_void);
 
-pub type CVPixelBufferPoolRef = *const __CVPixelBufferPool;
+pub type CVPixelBufferPoolRef = *mut __CVPixelBufferPool;
 
 pub type CVPixelBufferPoolFlushFlags = CVOptionFlags;
 

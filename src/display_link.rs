@@ -74,7 +74,7 @@ impl_CFTypeDescription!(CVDisplayLink);
 
 impl CVDisplayLink {
     pub fn from_cg_displays(display_array: &[CGDirectDisplayID]) -> Result<CVDisplayLink, CVReturn> {
-        let mut display_link = null_mut();
+        let mut display_link: CVDisplayLinkRef = null_mut();
         unsafe {
             let result = CVDisplayLinkCreateWithCGDisplays(display_array.as_ptr(), display_array.len() as CFIndex, &mut display_link);
             if result == kCVReturnSuccess {
@@ -86,7 +86,7 @@ impl CVDisplayLink {
     }
 
     pub fn from_opengl_display_mask(mask: CGOpenGLDisplayMask) -> Result<CVDisplayLink, CVReturn> {
-        let mut display_link = null_mut();
+        let mut display_link: CVDisplayLinkRef = null_mut();
         unsafe {
             let result = CVDisplayLinkCreateWithOpenGLDisplayMask(mask, &mut display_link);
             if result == kCVReturnSuccess {
@@ -98,7 +98,7 @@ impl CVDisplayLink {
     }
 
     pub fn from_cg_display(display_id: CGDirectDisplayID) -> Result<CVDisplayLink, CVReturn> {
-        let mut display_link = null_mut();
+        let mut display_link: CVDisplayLinkRef = null_mut();
         unsafe {
             let result = CVDisplayLinkCreateWithCGDisplay(display_id, &mut display_link);
             if result == kCVReturnSuccess {
@@ -110,7 +110,7 @@ impl CVDisplayLink {
     }
 
     pub fn from_active_cg_displays() -> Result<CVDisplayLink, CVReturn> {
-        let mut display_link = null_mut();
+        let mut display_link: CVDisplayLinkRef = null_mut();
         unsafe {
             let result = CVDisplayLinkCreateWithActiveCGDisplays(&mut display_link);
             if result == kCVReturnSuccess {

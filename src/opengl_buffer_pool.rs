@@ -15,7 +15,7 @@ use crate::{
 #[repr(C)]
 pub struct __CVOpenGLBufferPool(c_void);
 
-pub type CVOpenGLBufferPoolRef = *const __CVOpenGLBufferPool;
+pub type CVOpenGLBufferPoolRef = *mut __CVOpenGLBufferPool;
 
 extern "C" {
     pub static kCVOpenGLBufferPoolMinimumBufferCountKey: CFStringRef;
