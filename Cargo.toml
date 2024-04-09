@@ -3,7 +3,7 @@ name = "core-video"
 description = "Bindings to CoreVideo framework"
 homepage = "https://github.com/libark/core-video"
 repository = "https://github.com/libark/core-video"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Zhou Wei <zhouwei@ehom.net>"]
 license = "MIT OR Apache-2.0"
 categories = ["multimedia::video", "os::macos-apis"]
@@ -12,25 +12,22 @@ edition = "2018"
 
 [dependencies]
 block = "0.1"
-core-foundation = "0.9"
-core-graphics = "0.23"
+core-foundation = { version = "0.9", default-features = false }
+core-graphics = { version = "0.23", default-features = false }
 foreign-types = "0.5"
-io-surface = "0.15"
+io-surface = { version = "0.15", default-features = false }
 libc = "0.2"
-
-[dependencies.metal]
-version = "0.27"
-optional = true
-
-[dependencies.objc]
-version = "0.2"
-optional = true
+metal = { version = "0.27", optional = true }
+objc = { version = "0.2", optional = true }
 
 [features]
-default = ["metal", "objc"]
+default = ["display-link", "link", "metal", "objc"]
+display-link = []
+link = ["core-foundation/link", "core-graphics/link"]
 
 [package.metadata.docs.rs]
 no-default-features = true
+features = ["display-link"]
 default-target = "x86_64-apple-darwin"
 targets = [
     "aarch64-apple-darwin",

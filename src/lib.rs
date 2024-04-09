@@ -13,7 +13,7 @@ extern crate metal;
 extern crate objc;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
-#[link(name = "CoreVideo", kind = "framework")]
+#[cfg_attr(feature = "link", link(name = "CoreVideo", kind = "framework"))]
 extern "C" {}
 
 pub type CGLContextObj = *mut libc::c_void;
@@ -26,7 +26,7 @@ pub type OSType = u32;
 
 pub mod base;
 pub mod buffer;
-#[cfg(target_os = "macos")]
+#[cfg(all(target_os = "macos", feature = "display-link"))]
 pub mod display_link;
 pub mod host_time;
 pub mod image_buffer;
