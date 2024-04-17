@@ -54,6 +54,30 @@ extern "C" {
     pub fn CVPixelBufferPoolFlush(pool: CVPixelBufferPoolRef, options: CVPixelBufferPoolFlushFlags);
 }
 
+pub enum CVPixelBufferPoolKeys {
+    MinimumBufferCount,
+    MaximumBufferAge,
+    AllocationThreshold,
+    FreeBufferNotification,
+}
+
+impl From<CVPixelBufferPoolKeys> for CFStringRef {
+    fn from(key: CVPixelBufferPoolKeys) -> CFStringRef {
+        match key {
+            CVPixelBufferPoolKeys::MinimumBufferCount => unsafe { kCVPixelBufferPoolMinimumBufferCountKey },
+            CVPixelBufferPoolKeys::MaximumBufferAge => unsafe { kCVPixelBufferPoolMaximumBufferAgeKey },
+            CVPixelBufferPoolKeys::AllocationThreshold => unsafe { kCVPixelBufferPoolAllocationThresholdKey },
+            CVPixelBufferPoolKeys::FreeBufferNotification => unsafe { kCVPixelBufferPoolFreeBufferNotification },
+        }
+    }
+}
+
+impl From<CVPixelBufferPoolKeys> for CFString {
+    fn from(key: CVPixelBufferPoolKeys) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
+}
+
 pub struct CVPixelBufferPool(CVPixelBufferPoolRef);
 
 impl Drop for CVPixelBufferPool {

@@ -47,6 +47,50 @@ extern "C" {
     pub fn CVOpenGLTextureCacheFlush(textureCache: CVOpenGLTextureCacheRef, options: CVOptionFlags);
 }
 
+pub enum CVOpenGLTextureCacheKeys {
+    ChromaSamplingMode,
+}
+
+impl From<CVOpenGLTextureCacheKeys> for CFStringRef {
+    fn from(key: CVOpenGLTextureCacheKeys) -> Self {
+        unsafe {
+            match key {
+                CVOpenGLTextureCacheKeys::ChromaSamplingMode => kCVOpenGLTextureCacheChromaSamplingModeKey,
+            }
+        }
+    }
+}
+
+impl From<CVOpenGLTextureCacheKeys> for CFString {
+    fn from(key: CVOpenGLTextureCacheKeys) -> Self {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
+}
+
+pub enum CVOpenGLTextureCacheChromaSamplingMode {
+    Automatic,
+    HighestQuality,
+    BestPerformance,
+}
+
+impl From<CVOpenGLTextureCacheChromaSamplingMode> for CFStringRef {
+    fn from(mode: CVOpenGLTextureCacheChromaSamplingMode) -> Self {
+        unsafe {
+            match mode {
+                CVOpenGLTextureCacheChromaSamplingMode::Automatic => kCVOpenGLTextureCacheChromaSamplingModeAutomatic,
+                CVOpenGLTextureCacheChromaSamplingMode::HighestQuality => kCVOpenGLTextureCacheChromaSamplingModeHighestQuality,
+                CVOpenGLTextureCacheChromaSamplingMode::BestPerformance => kCVOpenGLTextureCacheChromaSamplingModeBestPerformance,
+            }
+        }
+    }
+}
+
+impl From<CVOpenGLTextureCacheChromaSamplingMode> for CFString {
+    fn from(mode: CVOpenGLTextureCacheChromaSamplingMode) -> Self {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(mode)) }
+    }
+}
+
 pub struct CVOpenGLTextureCache(CVOpenGLTextureCacheRef);
 
 impl Drop for CVOpenGLTextureCache {

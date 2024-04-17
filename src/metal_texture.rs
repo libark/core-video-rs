@@ -1,6 +1,6 @@
 use core_foundation::{
     base::{Boolean, CFTypeID, TCFType},
-    string::CFStringRef,
+    string::{CFString, CFStringRef},
 };
 use foreign_types::ForeignType;
 use metal::{MTLTexture, Texture};
@@ -26,6 +26,28 @@ extern "C" {
 
     pub static kCVMetalTextureUsage: CFStringRef;
     pub static kCVMetalTextureStorageMode: CFStringRef;
+}
+
+pub enum CVMetalTextureKeys {
+    Usage,
+    StorageMode,
+}
+
+impl From<CVMetalTextureKeys> for CFStringRef {
+    fn from(key: CVMetalTextureKeys) -> Self {
+        unsafe {
+            match key {
+                CVMetalTextureKeys::Usage => kCVMetalTextureUsage,
+                CVMetalTextureKeys::StorageMode => kCVMetalTextureStorageMode,
+            }
+        }
+    }
+}
+
+impl From<CVMetalTextureKeys> for CFString {
+    fn from(key: CVMetalTextureKeys) -> Self {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
 }
 
 impl TCVBuffer for CVMetalTexture {}

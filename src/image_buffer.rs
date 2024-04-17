@@ -101,6 +101,314 @@ extern "C" {
     pub static kCVImageBufferRegionOfInterestKey: CFStringRef;
 }
 
+pub enum CVImageBufferKeys {
+    CGColorSpace,
+    CleanAperture,
+    PreferredCleanAperture,
+    FieldCount,
+    FieldDetail,
+    PixelAspectRatio,
+    DisplayDimensions,
+    GammaLevel,
+    ICCProfile,
+    YCbCrMatrix,
+    ColorPrimaries,
+    TransferFunction,
+    ChromaLocationTopField,
+    ChromaLocationBottomField,
+    ChromaSubsampling,
+    AlphaChannelIsOpaque,
+    AlphaChannelMode,
+    MasteringDisplayColorVolume,
+    ContentLightLevelInfo,
+    AmbientViewingEnvironment,
+    RegionOfInterest,
+}
+
+impl From<CVImageBufferKeys> for CFStringRef {
+    fn from(key: CVImageBufferKeys) -> CFStringRef {
+        unsafe {
+            match key {
+                CVImageBufferKeys::CGColorSpace => kCVImageBufferCGColorSpaceKey,
+                CVImageBufferKeys::CleanAperture => kCVImageBufferCleanApertureKey,
+                CVImageBufferKeys::PreferredCleanAperture => kCVImageBufferPreferredCleanApertureKey,
+                CVImageBufferKeys::FieldCount => kCVImageBufferFieldCountKey,
+                CVImageBufferKeys::FieldDetail => kCVImageBufferFieldDetailKey,
+                CVImageBufferKeys::PixelAspectRatio => kCVImageBufferPixelAspectRatioKey,
+                CVImageBufferKeys::DisplayDimensions => kCVImageBufferDisplayDimensionsKey,
+                CVImageBufferKeys::GammaLevel => kCVImageBufferGammaLevelKey,
+                CVImageBufferKeys::ICCProfile => kCVImageBufferICCProfileKey,
+                CVImageBufferKeys::YCbCrMatrix => kCVImageBufferYCbCrMatrixKey,
+                CVImageBufferKeys::ColorPrimaries => kCVImageBufferColorPrimariesKey,
+                CVImageBufferKeys::TransferFunction => kCVImageBufferTransferFunctionKey,
+                CVImageBufferKeys::ChromaLocationTopField => kCVImageBufferChromaLocationTopFieldKey,
+                CVImageBufferKeys::ChromaLocationBottomField => kCVImageBufferChromaLocationBottomFieldKey,
+                CVImageBufferKeys::ChromaSubsampling => kCVImageBufferChromaSubsamplingKey,
+                CVImageBufferKeys::AlphaChannelIsOpaque => kCVImageBufferAlphaChannelIsOpaque,
+                CVImageBufferKeys::AlphaChannelMode => kCVImageBufferAlphaChannelModeKey,
+                CVImageBufferKeys::MasteringDisplayColorVolume => kCVImageBufferMasteringDisplayColorVolumeKey,
+                CVImageBufferKeys::ContentLightLevelInfo => kCVImageBufferContentLightLevelInfoKey,
+                CVImageBufferKeys::AmbientViewingEnvironment => kCVImageBufferAmbientViewingEnvironmentKey,
+                CVImageBufferKeys::RegionOfInterest => kCVImageBufferRegionOfInterestKey,
+            }
+        }
+    }
+}
+
+impl From<CVImageBufferKeys> for CFString {
+    fn from(key: CVImageBufferKeys) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
+}
+
+pub enum CVImageBufferFieldDetail {
+    TemporalTopFirst,
+    TemporalBottomFirst,
+    SpatialFirstLineEarly,
+    SpatialFirstLineLate,
+}
+
+impl From<CVImageBufferFieldDetail> for CFStringRef {
+    fn from(field_detail: CVImageBufferFieldDetail) -> CFStringRef {
+        unsafe {
+            match field_detail {
+                CVImageBufferFieldDetail::TemporalTopFirst => kCVImageBufferFieldDetailTemporalTopFirst,
+                CVImageBufferFieldDetail::TemporalBottomFirst => kCVImageBufferFieldDetailTemporalBottomFirst,
+                CVImageBufferFieldDetail::SpatialFirstLineEarly => kCVImageBufferFieldDetailSpatialFirstLineEarly,
+                CVImageBufferFieldDetail::SpatialFirstLineLate => kCVImageBufferFieldDetailSpatialFirstLineLate,
+            }
+        }
+    }
+}
+
+impl From<CVImageBufferFieldDetail> for CFString {
+    fn from(field_detail: CVImageBufferFieldDetail) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(field_detail)) }
+    }
+}
+
+pub enum CVImageBufferPixelAspectRatio {
+    HorizontalSpacing,
+    VerticalSpacing,
+}
+
+impl From<CVImageBufferPixelAspectRatio> for CFStringRef {
+    fn from(pixel_aspect_ratio: CVImageBufferPixelAspectRatio) -> CFStringRef {
+        unsafe {
+            match pixel_aspect_ratio {
+                CVImageBufferPixelAspectRatio::HorizontalSpacing => kCVImageBufferPixelAspectRatioHorizontalSpacingKey,
+                CVImageBufferPixelAspectRatio::VerticalSpacing => kCVImageBufferPixelAspectRatioVerticalSpacingKey,
+            }
+        }
+    }
+}
+
+impl From<CVImageBufferPixelAspectRatio> for CFString {
+    fn from(pixel_aspect_ratio: CVImageBufferPixelAspectRatio) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(pixel_aspect_ratio)) }
+    }
+}
+
+pub enum CVImageBufferYCbCrMatrix {
+    ITU_R_709_2,
+    ITU_R_601_4,
+    SMPTE_240M_1995,
+    DCI_P3,
+    P3_D65,
+    ITU_R_2020,
+}
+
+impl From<CVImageBufferYCbCrMatrix> for CFStringRef {
+    fn from(ycbcr_matrix: CVImageBufferYCbCrMatrix) -> CFStringRef {
+        unsafe {
+            match ycbcr_matrix {
+                CVImageBufferYCbCrMatrix::ITU_R_709_2 => kCVImageBufferYCbCrMatrix_ITU_R_709_2,
+                CVImageBufferYCbCrMatrix::ITU_R_601_4 => kCVImageBufferYCbCrMatrix_ITU_R_601_4,
+                CVImageBufferYCbCrMatrix::SMPTE_240M_1995 => kCVImageBufferYCbCrMatrix_SMPTE_240M_1995,
+                CVImageBufferYCbCrMatrix::DCI_P3 => kCVImageBufferYCbCrMatrix_DCI_P3,
+                CVImageBufferYCbCrMatrix::P3_D65 => kCVImageBufferYCbCrMatrix_P3_D65,
+                CVImageBufferYCbCrMatrix::ITU_R_2020 => kCVImageBufferYCbCrMatrix_ITU_R_2020,
+            }
+        }
+    }
+}
+
+impl From<CVImageBufferYCbCrMatrix> for CFString {
+    fn from(ycbcr_matrix: CVImageBufferYCbCrMatrix) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(ycbcr_matrix)) }
+    }
+}
+
+pub enum CVImageBufferColorPrimaries {
+    ITU_R_709_2,
+    EBU_3213,
+    SMPTE_C,
+    P22,
+    DCI_P3,
+    P3_D65,
+    ITU_R_2020,
+}
+
+impl From<CVImageBufferColorPrimaries> for CFStringRef {
+    fn from(color_primaries: CVImageBufferColorPrimaries) -> CFStringRef {
+        unsafe {
+            match color_primaries {
+                CVImageBufferColorPrimaries::ITU_R_709_2 => kCVImageBufferColorPrimaries_ITU_R_709_2,
+                CVImageBufferColorPrimaries::EBU_3213 => kCVImageBufferColorPrimaries_EBU_3213,
+                CVImageBufferColorPrimaries::SMPTE_C => kCVImageBufferColorPrimaries_SMPTE_C,
+                CVImageBufferColorPrimaries::P22 => kCVImageBufferColorPrimaries_P22,
+                CVImageBufferColorPrimaries::DCI_P3 => kCVImageBufferColorPrimaries_DCI_P3,
+                CVImageBufferColorPrimaries::P3_D65 => kCVImageBufferColorPrimaries_P3_D65,
+                CVImageBufferColorPrimaries::ITU_R_2020 => kCVImageBufferColorPrimaries_ITU_R_2020,
+            }
+        }
+    }
+}
+
+impl From<CVImageBufferColorPrimaries> for CFString {
+    fn from(color_primaries: CVImageBufferColorPrimaries) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(color_primaries)) }
+    }
+}
+
+pub enum CVImageBufferTransferFunction {
+    ITU_R_709_2,
+    SMPTE_240M_1995,
+    UseGamma,
+    sRGB,
+    ITU_R_2020,
+    SMPTE_ST_428_1,
+    SMPTE_ST_2084_PQ,
+    ITU_R_2100_HLG,
+    Linear,
+}
+
+impl From<CVImageBufferTransferFunction> for CFStringRef {
+    fn from(transfer_function: CVImageBufferTransferFunction) -> CFStringRef {
+        unsafe {
+            match transfer_function {
+                CVImageBufferTransferFunction::ITU_R_709_2 => kCVImageBufferTransferFunction_ITU_R_709_2,
+                CVImageBufferTransferFunction::SMPTE_240M_1995 => kCVImageBufferTransferFunction_SMPTE_240M_1995,
+                CVImageBufferTransferFunction::UseGamma => kCVImageBufferTransferFunction_UseGamma,
+                CVImageBufferTransferFunction::sRGB => kCVImageBufferTransferFunction_sRGB,
+                CVImageBufferTransferFunction::ITU_R_2020 => kCVImageBufferTransferFunction_ITU_R_2020,
+                CVImageBufferTransferFunction::SMPTE_ST_428_1 => kCVImageBufferTransferFunction_SMPTE_ST_428_1,
+                CVImageBufferTransferFunction::SMPTE_ST_2084_PQ => kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ,
+                CVImageBufferTransferFunction::ITU_R_2100_HLG => kCVImageBufferTransferFunction_ITU_R_2100_HLG,
+                CVImageBufferTransferFunction::Linear => kCVImageBufferTransferFunction_Linear,
+            }
+        }
+    }
+}
+
+impl From<CVImageBufferTransferFunction> for CFString {
+    fn from(transfer_function: CVImageBufferTransferFunction) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(transfer_function)) }
+    }
+}
+
+pub enum CVImageBufferChromaLocation {
+    Left,
+    Center,
+    TopLeft,
+    Top,
+    BottomLeft,
+    Bottom,
+    DV420,
+}
+
+impl From<CVImageBufferChromaLocation> for CFStringRef {
+    fn from(chroma_location: CVImageBufferChromaLocation) -> CFStringRef {
+        unsafe {
+            match chroma_location {
+                CVImageBufferChromaLocation::Left => kCVImageBufferChromaLocation_Left,
+                CVImageBufferChromaLocation::Center => kCVImageBufferChromaLocation_Center,
+                CVImageBufferChromaLocation::TopLeft => kCVImageBufferChromaLocation_TopLeft,
+                CVImageBufferChromaLocation::Top => kCVImageBufferChromaLocation_Top,
+                CVImageBufferChromaLocation::BottomLeft => kCVImageBufferChromaLocation_BottomLeft,
+                CVImageBufferChromaLocation::Bottom => kCVImageBufferChromaLocation_Bottom,
+                CVImageBufferChromaLocation::DV420 => kCVImageBufferChromaLocation_DV420,
+            }
+        }
+    }
+}
+
+impl From<CVImageBufferChromaLocation> for CFString {
+    fn from(chroma_location: CVImageBufferChromaLocation) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(chroma_location)) }
+    }
+}
+
+pub enum CVImageBufferChromaSubsampling {
+    _420,
+    _422,
+    _411,
+}
+
+impl From<CVImageBufferChromaSubsampling> for CFStringRef {
+    fn from(chroma_subsampling: CVImageBufferChromaSubsampling) -> CFStringRef {
+        unsafe {
+            match chroma_subsampling {
+                CVImageBufferChromaSubsampling::_420 => kCVImageBufferChromaSubsampling_420,
+                CVImageBufferChromaSubsampling::_422 => kCVImageBufferChromaSubsampling_422,
+                CVImageBufferChromaSubsampling::_411 => kCVImageBufferChromaSubsampling_411,
+            }
+        }
+    }
+}
+
+impl From<CVImageBufferChromaSubsampling> for CFString {
+    fn from(chroma_subsampling: CVImageBufferChromaSubsampling) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(chroma_subsampling)) }
+    }
+}
+
+pub enum CVImageBufferAlphaChannelMode {
+    StraightAlpha,
+    PremultipliedAlpha,
+}
+
+impl From<CVImageBufferAlphaChannelMode> for CFStringRef {
+    fn from(alpha_channel_mode: CVImageBufferAlphaChannelMode) -> CFStringRef {
+        unsafe {
+            match alpha_channel_mode {
+                CVImageBufferAlphaChannelMode::StraightAlpha => kCVImageBufferAlphaChannelMode_StraightAlpha,
+                CVImageBufferAlphaChannelMode::PremultipliedAlpha => kCVImageBufferAlphaChannelMode_PremultipliedAlpha,
+            }
+        }
+    }
+}
+
+impl From<CVImageBufferAlphaChannelMode> for CFString {
+    fn from(alpha_channel_mode: CVImageBufferAlphaChannelMode) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(alpha_channel_mode)) }
+    }
+}
+
+pub fn ycbcr_matrix_get_integer_code_point_for_string(ycbcr_matrix_string: CFString) -> i32 {
+    unsafe { CVYCbCrMatrixGetIntegerCodePointForString(ycbcr_matrix_string.as_concrete_TypeRef()) }
+}
+
+pub fn color_primaries_get_integer_code_point_for_string(color_primaries_string: CFString) -> i32 {
+    unsafe { CVColorPrimariesGetIntegerCodePointForString(color_primaries_string.as_concrete_TypeRef()) }
+}
+
+pub fn transfer_function_get_integer_code_point_for_string(transfer_function_string: CFString) -> i32 {
+    unsafe { CVTransferFunctionGetIntegerCodePointForString(transfer_function_string.as_concrete_TypeRef()) }
+}
+
+pub fn ycbcr_matrix_get_string_for_integer_code_point(ycbcr_matrix_code_point: i32) -> CFString {
+    unsafe { CFString::wrap_under_get_rule(CVYCbCrMatrixGetStringForIntegerCodePoint(ycbcr_matrix_code_point)) }
+}
+
+pub fn color_primaries_get_string_for_integer_code_point(color_primaries_code_point: i32) -> CFString {
+    unsafe { CFString::wrap_under_get_rule(CVColorPrimariesGetStringForIntegerCodePoint(color_primaries_code_point)) }
+}
+
+pub fn transfer_function_get_string_for_integer_code_point(transfer_function_code_point: i32) -> CFString {
+    unsafe { CFString::wrap_under_get_rule(CVTransferFunctionGetStringForIntegerCodePoint(transfer_function_code_point)) }
+}
+
 pub struct CVImageBuffer(CVImageBufferRef);
 
 impl Drop for CVImageBuffer {

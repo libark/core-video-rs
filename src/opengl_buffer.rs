@@ -37,6 +37,34 @@ extern "C" {
     pub fn CVOpenGLBufferAttach(openGLBuffer: CVOpenGLBufferRef, cglContext: CGLContextObj, face: GLenum, level: GLint, screen: GLint) -> CVReturn;
 }
 
+pub enum CVOpenGLBufferKeys {
+    Width,
+    Height,
+    Target,
+    InternalFormat,
+    MaximumMipmapLevel,
+}
+
+impl From<CVOpenGLBufferKeys> for CFStringRef {
+    fn from(key: CVOpenGLBufferKeys) -> Self {
+        unsafe {
+            match key {
+                CVOpenGLBufferKeys::Width => kCVOpenGLBufferWidth,
+                CVOpenGLBufferKeys::Height => kCVOpenGLBufferHeight,
+                CVOpenGLBufferKeys::Target => kCVOpenGLBufferTarget,
+                CVOpenGLBufferKeys::InternalFormat => kCVOpenGLBufferInternalFormat,
+                CVOpenGLBufferKeys::MaximumMipmapLevel => kCVOpenGLBufferMaximumMipmapLevel,
+            }
+        }
+    }
+}
+
+impl From<CVOpenGLBufferKeys> for CFString {
+    fn from(key: CVOpenGLBufferKeys) -> Self {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
+}
+
 impl TCVBuffer for CVOpenGLBuffer {}
 impl TCVImageBuffer for CVOpenGLBuffer {}
 pub struct CVOpenGLBuffer(CVOpenGLBufferRef);

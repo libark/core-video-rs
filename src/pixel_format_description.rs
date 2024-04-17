@@ -47,6 +47,7 @@ extern "C" {
     pub static kCVPixelFormatCGBitmapContextCompatibility: CFStringRef;
     pub static kCVPixelFormatCGImageCompatibility: CFStringRef;
     pub static kCVPixelFormatOpenGLCompatibility: CFStringRef;
+    #[cfg(target_os = "ios")]
     pub static kCVPixelFormatOpenGLESCompatibility: CFStringRef;
     pub static kCVPixelFormatFillExtendedPixelsCallback: CFStringRef;
 
@@ -54,6 +55,86 @@ extern "C" {
     pub fn CVPixelFormatDescriptionArrayCreateWithAllPixelFormatTypes(allocator: CFAllocatorRef) -> CFArrayRef;
     pub fn CVPixelFormatDescriptionRegisterDescriptionWithPixelFormatType(description: CFDictionaryRef, pixelFormat: OSType);
     pub fn CVIsCompressedPixelFormatAvailable(pixelFormat: OSType) -> Boolean;
+}
+
+pub enum CVPixelFormatDescriptionKeys {
+    Name,
+    Constant,
+    CodecType,
+    FourCC,
+    ContainsAlpha,
+    ContainsYCbCr,
+    ContainsRGB,
+    ComponentRange,
+    ComponentRange_VideoRange,
+    ComponentRange_FullRange,
+    ComponentRange_WideRange,
+    Planes,
+    BlockWidth,
+    BlockHeight,
+    BitsPerBlock,
+    BlockHorizontalAlignment,
+    BlockVerticalAlignment,
+    BlackBlock,
+    HorizontalSubsampling,
+    VerticalSubsampling,
+    OpenGLFormat,
+    OpenGLType,
+    OpenGLInternalFormat,
+    CGBitmapInfo,
+    QDCompatibility,
+    CGBitmapContextCompatibility,
+    CGImageCompatibility,
+    OpenGLCompatibility,
+    #[cfg(target_os = "ios")]
+    OpenGLESCompatibility,
+    FillExtendedPixelsCallback,
+}
+
+impl From<CVPixelFormatDescriptionKeys> for CFStringRef {
+    fn from(key: CVPixelFormatDescriptionKeys) -> Self {
+        unsafe {
+            match key {
+                CVPixelFormatDescriptionKeys::Name => kCVPixelFormatName,
+                CVPixelFormatDescriptionKeys::Constant => kCVPixelFormatConstant,
+                CVPixelFormatDescriptionKeys::CodecType => kCVPixelFormatCodecType,
+                CVPixelFormatDescriptionKeys::FourCC => kCVPixelFormatFourCC,
+                CVPixelFormatDescriptionKeys::ContainsAlpha => kCVPixelFormatContainsAlpha,
+                CVPixelFormatDescriptionKeys::ContainsYCbCr => kCVPixelFormatContainsYCbCr,
+                CVPixelFormatDescriptionKeys::ContainsRGB => kCVPixelFormatContainsRGB,
+                CVPixelFormatDescriptionKeys::ComponentRange => kCVPixelFormatComponentRange,
+                CVPixelFormatDescriptionKeys::ComponentRange_VideoRange => kCVPixelFormatComponentRange_VideoRange,
+                CVPixelFormatDescriptionKeys::ComponentRange_FullRange => kCVPixelFormatComponentRange_FullRange,
+                CVPixelFormatDescriptionKeys::ComponentRange_WideRange => kCVPixelFormatComponentRange_WideRange,
+                CVPixelFormatDescriptionKeys::Planes => kCVPixelFormatPlanes,
+                CVPixelFormatDescriptionKeys::BlockWidth => kCVPixelFormatBlockWidth,
+                CVPixelFormatDescriptionKeys::BlockHeight => kCVPixelFormatBlockHeight,
+                CVPixelFormatDescriptionKeys::BitsPerBlock => kCVPixelFormatBitsPerBlock,
+                CVPixelFormatDescriptionKeys::BlockHorizontalAlignment => kCVPixelFormatBlockHorizontalAlignment,
+                CVPixelFormatDescriptionKeys::BlockVerticalAlignment => kCVPixelFormatBlockVerticalAlignment,
+                CVPixelFormatDescriptionKeys::BlackBlock => kCVPixelFormatBlackBlock,
+                CVPixelFormatDescriptionKeys::HorizontalSubsampling => kCVPixelFormatHorizontalSubsampling,
+                CVPixelFormatDescriptionKeys::VerticalSubsampling => kCVPixelFormatVerticalSubsampling,
+                CVPixelFormatDescriptionKeys::OpenGLFormat => kCVPixelFormatOpenGLFormat,
+                CVPixelFormatDescriptionKeys::OpenGLType => kCVPixelFormatOpenGLType,
+                CVPixelFormatDescriptionKeys::OpenGLInternalFormat => kCVPixelFormatOpenGLInternalFormat,
+                CVPixelFormatDescriptionKeys::CGBitmapInfo => kCVPixelFormatCGBitmapInfo,
+                CVPixelFormatDescriptionKeys::QDCompatibility => kCVPixelFormatQDCompatibility,
+                CVPixelFormatDescriptionKeys::CGBitmapContextCompatibility => kCVPixelFormatCGBitmapContextCompatibility,
+                CVPixelFormatDescriptionKeys::CGImageCompatibility => kCVPixelFormatCGImageCompatibility,
+                CVPixelFormatDescriptionKeys::OpenGLCompatibility => kCVPixelFormatOpenGLCompatibility,
+                #[cfg(target_os = "ios")]
+                CVPixelFormatDescriptionKeys::OpenGLESCompatibility => kCVPixelFormatOpenGLESCompatibility,
+                CVPixelFormatDescriptionKeys::FillExtendedPixelsCallback => kCVPixelFormatFillExtendedPixelsCallback,
+            }
+        }
+    }
+}
+
+impl From<CVPixelFormatDescriptionKeys> for CFString {
+    fn from(key: CVPixelFormatDescriptionKeys) -> Self {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
 }
 
 pub fn pixel_format_description_create_with_pixel_format_type(pixel_format: OSType) -> Result<CFDictionary<CFString, CFType>, ()> {

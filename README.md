@@ -1,2 +1,2 @@
 # core-video
-Rust bindings to CoreVideo framework
+Rust safe bindings to CoreVideo framework

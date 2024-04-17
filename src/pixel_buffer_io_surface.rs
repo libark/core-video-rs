@@ -3,7 +3,7 @@ use std::ptr::{null, null_mut};
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
-    string::CFStringRef,
+    string::{CFString, CFStringRef},
 };
 use io_surface::IOSurface;
 
@@ -29,8 +29,36 @@ extern "C" {
     ) -> CVReturn;
 }
 
+pub enum CVPixelBufferIOSurfaceKeys {
+    OpenGLTextureCompatibility,
+    OpenGLFBOCompatibility,
+    CoreAnimationCompatibility,
+    OpenGLESTextureCompatibility,
+    OpenGLESFBOCompatibility,
+}
+
+impl From<CVPixelBufferIOSurfaceKeys> for CFStringRef {
+    fn from(key: CVPixelBufferIOSurfaceKeys) -> Self {
+        unsafe {
+            match key {
+                CVPixelBufferIOSurfaceKeys::OpenGLTextureCompatibility => kCVPixelBufferIOSurfaceOpenGLTextureCompatibilityKey,
+                CVPixelBufferIOSurfaceKeys::OpenGLFBOCompatibility => kCVPixelBufferIOSurfaceOpenGLFBOCompatibilityKey,
+                CVPixelBufferIOSurfaceKeys::CoreAnimationCompatibility => kCVPixelBufferIOSurfaceCoreAnimationCompatibilityKey,
+                CVPixelBufferIOSurfaceKeys::OpenGLESTextureCompatibility => kCVPixelBufferIOSurfaceOpenGLESTextureCompatibilityKey,
+                CVPixelBufferIOSurfaceKeys::OpenGLESFBOCompatibility => kCVPixelBufferIOSurfaceOpenGLESFBOCompatibilityKey,
+            }
+        }
+    }
+}
+
+impl From<CVPixelBufferIOSurfaceKeys> for CFString {
+    fn from(key: CVPixelBufferIOSurfaceKeys) -> Self {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
+}
+
 impl CVPixelBuffer {
-    pub fn from_io_surface(io_surface: &IOSurface, options: Option<&CFDictionary<CFType, CFType>>) -> Result<CVPixelBuffer, CVReturn> {
+    pub fn from_io_surface(io_surface: &IOSurface, options: Option<&CFDictionary<CFString, CFType>>) -> Result<CVPixelBuffer, CVReturn> {
         let mut pixel_buffer: CVPixelBufferRef = null_mut();
         let status = unsafe {
             CVPixelBufferCreateWithIOSurface(

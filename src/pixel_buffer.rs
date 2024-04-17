@@ -171,9 +171,12 @@ extern "C" {
     pub static kCVPixelBufferOpenGLCompatibilityKey: CFStringRef;
     pub static kCVPixelBufferPlaneAlignmentKey: CFStringRef;
     pub static kCVPixelBufferIOSurfacePropertiesKey: CFStringRef;
+    #[cfg(target_os = "ios")]
     pub static kCVPixelBufferOpenGLESCompatibilityKey: CFStringRef;
     pub static kCVPixelBufferMetalCompatibilityKey: CFStringRef;
+    #[cfg(target_os = "macos")]
     pub static kCVPixelBufferOpenGLTextureCacheCompatibilityKey: CFStringRef;
+    #[cfg(target_os = "ios")]
     pub static kCVPixelBufferOpenGLESTextureCacheCompatibilityKey: CFStringRef;
     pub static kCVPixelBufferVersatileBayerKey_BayerPattern: CFStringRef;
 }
@@ -268,6 +271,68 @@ extern "C" {
     pub fn CVPixelBufferCopyCreationAttributes(pixelBuffer: CVPixelBufferRef) -> CFDictionaryRef;
 }
 
+pub enum CVPixelBufferKeys {
+    PixelFormatType,
+    MemoryAllocator,
+    Width,
+    Height,
+    ExtendedPixelsLeft,
+    ExtendedPixelsTop,
+    ExtendedPixelsRight,
+    ExtendedPixelsBottom,
+    BytesPerRowAlignment,
+    CGBitmapContextCompatibility,
+    CGImageCompatibility,
+    OpenGLCompatibility,
+    PlaneAlignment,
+    IOSurfaceProperties,
+    #[cfg(target_os = "ios")]
+    OpenGLESCompatibility,
+    MetalCompatibility,
+    #[cfg(target_os = "macos")]
+    OpenGLTextureCacheCompatibility,
+    #[cfg(target_os = "ios")]
+    OpenGLESTextureCacheCompatibility,
+    VersatileBayerKey_BayerPattern,
+}
+
+impl From<CVPixelBufferKeys> for CFStringRef {
+    fn from(key: CVPixelBufferKeys) -> Self {
+        unsafe {
+            match key {
+                CVPixelBufferKeys::PixelFormatType => kCVPixelBufferPixelFormatTypeKey,
+                CVPixelBufferKeys::MemoryAllocator => kCVPixelBufferMemoryAllocatorKey,
+                CVPixelBufferKeys::Width => kCVPixelBufferWidthKey,
+                CVPixelBufferKeys::Height => kCVPixelBufferHeightKey,
+                CVPixelBufferKeys::ExtendedPixelsLeft => kCVPixelBufferExtendedPixelsLeftKey,
+                CVPixelBufferKeys::ExtendedPixelsTop => kCVPixelBufferExtendedPixelsTopKey,
+                CVPixelBufferKeys::ExtendedPixelsRight => kCVPixelBufferExtendedPixelsRightKey,
+                CVPixelBufferKeys::ExtendedPixelsBottom => kCVPixelBufferExtendedPixelsBottomKey,
+                CVPixelBufferKeys::BytesPerRowAlignment => kCVPixelBufferBytesPerRowAlignmentKey,
+                CVPixelBufferKeys::CGBitmapContextCompatibility => kCVPixelBufferCGBitmapContextCompatibilityKey,
+                CVPixelBufferKeys::CGImageCompatibility => kCVPixelBufferCGImageCompatibilityKey,
+                CVPixelBufferKeys::OpenGLCompatibility => kCVPixelBufferOpenGLCompatibilityKey,
+                CVPixelBufferKeys::PlaneAlignment => kCVPixelBufferPlaneAlignmentKey,
+                CVPixelBufferKeys::IOSurfaceProperties => kCVPixelBufferIOSurfacePropertiesKey,
+                #[cfg(target_os = "ios")]
+                CVPixelBufferKeys::OpenGLESCompatibility => kCVPixelBufferOpenGLESCompatibilityKey,
+                CVPixelBufferKeys::MetalCompatibility => kCVPixelBufferMetalCompatibilityKey,
+                #[cfg(target_os = "macos")]
+                CVPixelBufferKeys::OpenGLTextureCacheCompatibility => kCVPixelBufferOpenGLTextureCacheCompatibilityKey,
+                #[cfg(target_os = "ios")]
+                CVPixelBufferKeys::OpenGLESTextureCacheCompatibility => kCVPixelBufferOpenGLESTextureCacheCompatibilityKey,
+                CVPixelBufferKeys::VersatileBayerKey_BayerPattern => kCVPixelBufferVersatileBayerKey_BayerPattern,
+            }
+        }
+    }
+}
+
+impl From<CVPixelBufferKeys> for CFString {
+    fn from(key: CVPixelBufferKeys) -> Self {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
+}
+
 impl TCVBuffer for CVPixelBuffer {}
 impl TCVImageBuffer for CVPixelBuffer {}
 
@@ -308,55 +373,55 @@ impl CVPixelBuffer {
     }
 
     pub fn lock_base_address(&self, options: CVPixelBufferLockFlags) -> CVReturn {
-        unsafe { CVPixelBufferLockBaseAddress(self.0, options) }
+        unsafe { CVPixelBufferLockBaseAddress(self.as_concrete_TypeRef(), options) }
     }
 
     pub fn unlock_base_address(&self, options: CVPixelBufferLockFlags) -> CVReturn {
-        unsafe { CVPixelBufferUnlockBaseAddress(self.0, options) }
+        unsafe { CVPixelBufferUnlockBaseAddress(self.as_concrete_TypeRef(), options) }
     }
 
     pub fn get_width(&self) -> usize {
-        unsafe { CVPixelBufferGetWidth(self.0) }
+        unsafe { CVPixelBufferGetWidth(self.as_concrete_TypeRef()) }
     }
 
     pub fn get_height(&self) -> usize {
-        unsafe { CVPixelBufferGetHeight(self.0) }
+        unsafe { CVPixelBufferGetHeight(self.as_concrete_TypeRef()) }
     }
 
     pub fn get_pixel_format(&self) -> OSType {
-        unsafe { CVPixelBufferGetPixelFormatType(self.0) }
+        unsafe { CVPixelBufferGetPixelFormatType(self.as_concrete_TypeRef()) }
     }
 
     pub fn get_base_address(&self) -> *mut c_void {
-        unsafe { CVPixelBufferGetBaseAddress(self.0) }
+        unsafe { CVPixelBufferGetBaseAddress(self.as_concrete_TypeRef()) }
     }
 
     pub fn get_bytes_per_row(&self) -> usize {
-        unsafe { CVPixelBufferGetBytesPerRow(self.0) }
+        unsafe { CVPixelBufferGetBytesPerRow(self.as_concrete_TypeRef()) }
     }
 
     pub fn is_planar(&self) -> bool {
-        unsafe { CVPixelBufferIsPlanar(self.0) != 0 }
+        unsafe { CVPixelBufferIsPlanar(self.as_concrete_TypeRef()) != 0 }
     }
 
     pub fn get_plane_count(&self) -> usize {
-        unsafe { CVPixelBufferGetPlaneCount(self.0) }
+        unsafe { CVPixelBufferGetPlaneCount(self.as_concrete_TypeRef()) }
     }
 
     pub fn get_width_of_plane(&self, plane_index: usize) -> usize {
-        unsafe { CVPixelBufferGetWidthOfPlane(self.0, plane_index) }
+        unsafe { CVPixelBufferGetWidthOfPlane(self.as_concrete_TypeRef(), plane_index) }
     }
 
     pub fn get_height_of_plane(&self, plane_index: usize) -> usize {
-        unsafe { CVPixelBufferGetHeightOfPlane(self.0, plane_index) }
+        unsafe { CVPixelBufferGetHeightOfPlane(self.as_concrete_TypeRef(), plane_index) }
     }
 
     pub fn get_base_address_of_plane(&self, plane_index: usize) -> *mut c_void {
-        unsafe { CVPixelBufferGetBaseAddressOfPlane(self.0, plane_index) }
+        unsafe { CVPixelBufferGetBaseAddressOfPlane(self.as_concrete_TypeRef(), plane_index) }
     }
 
     pub fn get_bytes_per_row_of_plane(&self, plane_index: usize) -> usize {
-        unsafe { CVPixelBufferGetBytesPerRowOfPlane(self.0, plane_index) }
+        unsafe { CVPixelBufferGetBytesPerRowOfPlane(self.as_concrete_TypeRef(), plane_index) }
     }
 
     pub fn get_extended_pixels(&self) -> (usize, usize, usize, usize) {
@@ -365,18 +430,18 @@ impl CVPixelBuffer {
             let mut right = 0;
             let mut top = 0;
             let mut bottom = 0;
-            CVPixelBufferGetExtendedPixels(self.0, &mut left, &mut right, &mut top, &mut bottom);
+            CVPixelBufferGetExtendedPixels(self.as_concrete_TypeRef(), &mut left, &mut right, &mut top, &mut bottom);
             (left, right, top, bottom)
         }
     }
 
     pub fn fill_extended_pixels(&self) -> CVReturn {
-        unsafe { CVPixelBufferFillExtendedPixels(self.0) }
+        unsafe { CVPixelBufferFillExtendedPixels(self.as_concrete_TypeRef()) }
     }
 
-    pub fn copy_creation_attributes(&self) -> Option<CFDictionary<CFType, CFType>> {
+    pub fn copy_creation_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
-            let attributes = CVPixelBufferCopyCreationAttributes(self.0);
+            let attributes = CVPixelBufferCopyCreationAttributes(self.as_concrete_TypeRef());
             if attributes.is_null() {
                 None
             } else {

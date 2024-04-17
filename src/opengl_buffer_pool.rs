@@ -39,6 +39,28 @@ extern "C" {
     ) -> CVReturn;
 }
 
+pub enum CVOpenGLBufferPoolKeys {
+    MinimumBufferCount,
+    MaximumBufferAge,
+}
+
+impl From<CVOpenGLBufferPoolKeys> for CFStringRef {
+    fn from(key: CVOpenGLBufferPoolKeys) -> Self {
+        unsafe {
+            match key {
+                CVOpenGLBufferPoolKeys::MinimumBufferCount => kCVOpenGLBufferPoolMinimumBufferCountKey,
+                CVOpenGLBufferPoolKeys::MaximumBufferAge => kCVOpenGLBufferPoolMaximumBufferAgeKey,
+            }
+        }
+    }
+}
+
+impl From<CVOpenGLBufferPoolKeys> for CFString {
+    fn from(key: CVOpenGLBufferPoolKeys) -> Self {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
+}
+
 pub struct CVOpenGLBufferPool(CVOpenGLBufferPoolRef);
 
 impl Drop for CVOpenGLBufferPool {
@@ -73,7 +95,7 @@ impl CVOpenGLBufferPool {
 
     pub fn get_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
-            let attributes = CVOpenGLBufferPoolGetAttributes(self.0);
+            let attributes = CVOpenGLBufferPoolGetAttributes(self.as_concrete_TypeRef());
             if attributes.is_null() {
                 None
             } else {
@@ -84,7 +106,7 @@ impl CVOpenGLBufferPool {
 
     pub fn get_opengl_buffer_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
-            let attributes = CVOpenGLBufferPoolGetOpenGLBufferAttributes(self.0);
+            let attributes = CVOpenGLBufferPoolGetOpenGLBufferAttributes(self.as_concrete_TypeRef());
             if attributes.is_null() {
                 None
             } else {
@@ -95,7 +117,7 @@ impl CVOpenGLBufferPool {
 
     pub fn create_open_gl_buffer(&self) -> Result<CVOpenGLBuffer, CVReturn> {
         let mut buffer: CVOpenGLBufferRef = null_mut();
-        let status = unsafe { CVOpenGLBufferPoolCreateOpenGLBuffer(kCFAllocatorDefault, self.0, &mut buffer) };
+        let status = unsafe { CVOpenGLBufferPoolCreateOpenGLBuffer(kCFAllocatorDefault, self.as_concrete_TypeRef(), &mut buffer) };
         if status == kCVReturnSuccess {
             Ok(unsafe { TCFType::wrap_under_create_rule(buffer) })
         } else {

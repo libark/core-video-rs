@@ -38,6 +38,52 @@ extern "C" {
     pub fn CVBufferHasAttachment(buffer: CVBufferRef, key: CFStringRef) -> Boolean;
 }
 
+pub enum CVBufferAttachmentsKeys {
+    Propagated,
+    NonPropagated,
+}
+
+impl From<CVBufferAttachmentsKeys> for CFStringRef {
+    fn from(key: CVBufferAttachmentsKeys) -> CFStringRef {
+        unsafe {
+            match key {
+                CVBufferAttachmentsKeys::Propagated => kCVBufferPropagatedAttachmentsKey,
+                CVBufferAttachmentsKeys::NonPropagated => kCVBufferNonPropagatedAttachmentsKey,
+            }
+        }
+    }
+}
+
+impl From<CVBufferAttachmentsKeys> for CFString {
+    fn from(key: CVBufferAttachmentsKeys) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
+}
+
+pub enum CVBufferKeys {
+    MovieTime,
+    TimeValue,
+    TimeScale,
+}
+
+impl From<CVBufferKeys> for CFStringRef {
+    fn from(key: CVBufferKeys) -> CFStringRef {
+        unsafe {
+            match key {
+                CVBufferKeys::MovieTime => kCVBufferMovieTimeKey,
+                CVBufferKeys::TimeValue => kCVBufferTimeValueKey,
+                CVBufferKeys::TimeScale => kCVBufferTimeScaleKey,
+            }
+        }
+    }
+}
+
+impl From<CVBufferKeys> for CFString {
+    fn from(key: CVBufferKeys) -> CFString {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
+}
+
 pub struct CVBuffer(CVBufferRef);
 
 impl Drop for CVBuffer {

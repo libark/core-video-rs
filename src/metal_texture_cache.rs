@@ -44,6 +44,26 @@ extern "C" {
     pub fn CVMetalTextureCacheFlush(textureCache: CVMetalTextureCacheRef, options: CVOptionFlags);
 }
 
+pub enum CVMetalTextureCacheKeys {
+    MaximumTextureAge,
+}
+
+impl From<CVMetalTextureCacheKeys> for CFStringRef {
+    fn from(key: CVMetalTextureCacheKeys) -> Self {
+        unsafe {
+            match key {
+                CVMetalTextureCacheKeys::MaximumTextureAge => kCVMetalTextureCacheMaximumTextureAgeKey,
+            }
+        }
+    }
+}
+
+impl From<CVMetalTextureCacheKeys> for CFString {
+    fn from(key: CVMetalTextureCacheKeys) -> Self {
+        unsafe { CFString::wrap_under_get_rule(CFStringRef::from(key)) }
+    }
+}
+
 declare_TCFType! {
     CVMetalTextureCache, CVMetalTextureCacheRef
 }
