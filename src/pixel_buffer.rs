@@ -12,7 +12,7 @@ use crate::{
     base::CVOptionFlags,
     buffer::TCVBuffer,
     image_buffer::{CVImageBufferRef, TCVImageBuffer},
-    return_::{kCVReturnSuccess, CVReturn},
+    return_::{kCVReturnInvalidArgument, kCVReturnSuccess, CVReturn},
     OSType,
 };
 
@@ -221,7 +221,7 @@ extern "C" {
         width: size_t,
         height: size_t,
         pixelFormatType: OSType,
-        baseAddress: *const c_void,
+        baseAddress: *mut c_void,
         bytesPerRow: size_t,
         releaseCallback: CVPixelBufferReleaseBytesCallback,
         releaseRefCon: *mut c_void,
@@ -233,10 +233,10 @@ extern "C" {
         width: size_t,
         height: size_t,
         pixelFormatType: OSType,
-        dataPtr: *const c_void,
+        dataPtr: *mut c_void,
         dataSize: size_t,
         numberOfPlanes: size_t,
-        planeBaseAddress: *const *const c_void,
+        planeBaseAddress: *const *mut c_void,
         planeWidth: *const size_t,
         planeHeight: *const size_t,
         planeBytesPerRow: *const size_t,
@@ -361,6 +361,87 @@ impl CVPixelBuffer {
                 width,
                 height,
                 pixel_format,
+                options.map_or(null(), |options| options.as_concrete_TypeRef()),
+                &mut pixel_buffer,
+            )
+        };
+        if status == kCVReturnSuccess {
+            Ok(unsafe { TCFType::wrap_under_create_rule(pixel_buffer) })
+        } else {
+            Err(status)
+        }
+    }
+
+    pub unsafe fn new_with_bytes(
+        pixel_format: OSType,
+        width: usize,
+        height: usize,
+        base_address: *mut c_void,
+        bytes_per_row: usize,
+        release_callback: CVPixelBufferReleaseBytesCallback,
+        release_ref_con: *mut c_void,
+        options: Option<&CFDictionary<CFString, CFType>>,
+    ) -> Result<CVPixelBuffer, CVReturn> {
+        let mut pixel_buffer: CVPixelBufferRef = null_mut();
+        let status = unsafe {
+            CVPixelBufferCreateWithBytes(
+                kCFAllocatorDefault,
+                width,
+                height,
+                pixel_format,
+                base_address,
+                bytes_per_row,
+                release_callback,
+                release_ref_con,
+                options.map_or(null(), |options| options.as_concrete_TypeRef()),
+                &mut pixel_buffer,
+            )
+        };
+        if status == kCVReturnSuccess {
+            Ok(unsafe { TCFType::wrap_under_create_rule(pixel_buffer) })
+        } else {
+            Err(status)
+        }
+    }
+
+    pub unsafe fn new_with_planar_bytes(
+        pixel_format: OSType,
+        width: usize,
+        height: usize,
+        data_ptr: *mut c_void,
+        data_size: usize,
+        number_of_planes: usize,
+        plane_base_address: Vec<*mut c_void>,
+        plane_width: Vec<usize>,
+        plane_height: Vec<usize>,
+        plane_bytes_per_row: Vec<usize>,
+        release_callback: CVPixelBufferReleasePlanarBytesCallback,
+        release_ref_con: *mut c_void,
+        options: Option<&CFDictionary<CFString, CFType>>,
+    ) -> Result<CVPixelBuffer, CVReturn> {
+        if plane_base_address.len() != number_of_planes ||
+            plane_width.len() != number_of_planes ||
+            plane_height.len() != number_of_planes ||
+            plane_bytes_per_row.len() != number_of_planes
+        {
+            return Err(kCVReturnInvalidArgument);
+        }
+        let mut pixel_buffer: CVPixelBufferRef = null_mut();
+        let status = unsafe {
+            CVPixelBufferCreateWithPlanarBytes(
+                kCFAllocatorDefault,
+                width,
+                height,
+                pixel_format,
+                data_ptr,
+                data_size,
+                number_of_planes,
+                plane_base_address.as_ptr(),
+                plane_width.as_ptr(),
+                plane_height.as_ptr(),
+                plane_bytes_per_row.as_ptr(),
+                release_callback,
+                release_ref_con,
                 options.map_or(null(), |options| options.as_concrete_TypeRef()),
                 &mut pixel_buffer,
             )
