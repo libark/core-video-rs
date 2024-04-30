@@ -12,7 +12,7 @@ use crate::{
     base::CVOptionFlags,
     buffer::TCVBuffer,
     image_buffer::{CVImageBufferRef, TCVImageBuffer},
-    return_::{kCVReturnInvalidArgument, kCVReturnSuccess, CVReturn},
+    r#return::{kCVReturnInvalidArgument, kCVReturnSuccess, CVReturn},
     OSType,
 };
 

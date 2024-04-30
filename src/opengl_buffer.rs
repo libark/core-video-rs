@@ -10,7 +10,7 @@ use libc::size_t;
 use crate::{
     buffer::TCVBuffer,
     image_buffer::{CVImageBufferRef, TCVImageBuffer},
-    return_::{kCVReturnSuccess, CVReturn},
+    r#return::{kCVReturnSuccess, CVReturn},
     CGLContextObj, GLenum, GLint,
 };
 

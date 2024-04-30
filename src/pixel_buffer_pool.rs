@@ -10,7 +10,7 @@ use libc::c_void;
 use crate::{
     base::CVOptionFlags,
     pixel_buffer::{CVPixelBuffer, CVPixelBufferRef},
-    return_::{kCVReturnSuccess, CVReturn},
+    r#return::{kCVReturnSuccess, CVReturn},
 };
 
 #[repr(C)]

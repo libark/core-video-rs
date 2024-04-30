@@ -11,7 +11,7 @@ use crate::{
     base::CVOptionFlags,
     image_buffer::CVImageBufferRef,
     metal_texture::{CVMetalTexture, CVMetalTextureRef},
-    return_::{kCVReturnSuccess, CVReturn},
+    r#return::{kCVReturnSuccess, CVReturn},
 };
 
 #[repr(C)]

@@ -9,8 +9,8 @@ extern crate io_surface;
 extern crate libc;
 #[cfg(feature = "metal")]
 extern crate metal;
-#[cfg(all(target_os = "ios", feature = "objc"))]
-extern crate objc;
+#[cfg(feature = "objc")]
+extern crate objc2;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 #[cfg_attr(feature = "link", link(name = "CoreVideo", kind = "framework"))]
@@ -50,4 +50,4 @@ pub mod pixel_buffer;
 pub mod pixel_buffer_io_surface;
 pub mod pixel_buffer_pool;
 pub mod pixel_format_description;
-pub mod return_;
+pub mod r#return;

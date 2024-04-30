@@ -6,6 +6,8 @@ use core_foundation::{
     string::{CFString, CFStringRef},
 };
 use libc::c_void;
+#[cfg(feature = "objc")]
+use objc2::encode::{Encoding, RefEncode};
 
 #[repr(C)]
 pub struct __CVBuffer(c_void);
@@ -36,6 +38,11 @@ extern "C" {
     pub fn CVBufferCopyAttachments(sourceBuffer: CVBufferRef, attachmentMode: *mut CVAttachmentMode) -> CFDictionaryRef;
     pub fn CVBufferCopyAttachment(buffer: CVBufferRef, key: CFStringRef, attachmentMode: *mut CVAttachmentMode) -> CFTypeRef;
     pub fn CVBufferHasAttachment(buffer: CVBufferRef, key: CFStringRef) -> Boolean;
+}
+
+#[cfg(feature = "objc")]
+unsafe impl RefEncode for __CVBuffer {
+    const ENCODING_REF: Encoding = Encoding::Pointer(&Encoding::Struct("__CVBuffer", &[]));
 }
 
 pub enum CVBufferAttachmentsKeys {

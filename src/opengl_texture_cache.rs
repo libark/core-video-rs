@@ -11,7 +11,7 @@ use crate::{
     base::CVOptionFlags,
     image_buffer::{CVImageBuffer, CVImageBufferRef},
     opengl_texture::{CVOpenGLTexture, CVOpenGLTextureRef},
-    return_::{kCVReturnSuccess, CVReturn},
+    r#return::{kCVReturnSuccess, CVReturn},
     CGLContextObj, CGLPixelFormatObj,
 };
 

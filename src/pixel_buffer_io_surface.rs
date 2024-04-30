@@ -10,7 +10,7 @@ use io_surface::IOSurface;
 use crate::{
     io_surface::IOSurfaceRef,
     pixel_buffer::{CVPixelBuffer, CVPixelBufferRef},
-    return_::{kCVReturnSuccess, CVReturn},
+    r#return::{kCVReturnSuccess, CVReturn},
 };
 
 extern "C" {

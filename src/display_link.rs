@@ -12,7 +12,7 @@ pub type CVDisplayLinkRef = *mut __CVDisplayLink;
 
 use crate::{
     base::{CVOptionFlags, CVTime, CVTimeStamp},
-    return_::{kCVReturnSuccess, CVReturn},
+    r#return::{kCVReturnSuccess, CVReturn},
     CGLContextObj, CGLPixelFormatObj,
 };
 

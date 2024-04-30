@@ -9,7 +9,7 @@ use libc::c_void;
 
 use crate::{
     opengl_buffer::{CVOpenGLBuffer, CVOpenGLBufferRef},
-    return_::{kCVReturnSuccess, CVReturn},
+    r#return::{kCVReturnSuccess, CVReturn},
 };
 
 #[repr(C)]

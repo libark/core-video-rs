@@ -7,13 +7,13 @@ use core_foundation::{
 };
 use libc::{c_void, size_t};
 #[cfg(feature = "objc")]
-use objc::runtime::Object;
+use objc2::runtime::NSObject;
 
 use crate::{
     base::CVOptionFlags,
     image_buffer::{CVImageBuffer, CVImageBufferRef},
     opengl_es_texture::{CVOpenGLESTexture, CVOpenGLESTextureRef},
-    return_::{kCVReturnSuccess, CVReturn},
+    r#return::{kCVReturnSuccess, CVReturn},
     GLenum, GLint, GLsizei,
 };
 
@@ -23,7 +23,7 @@ pub struct __CVOpenGLESTextureCache(c_void);
 pub type CVOpenGLESTextureCacheRef = *mut __CVOpenGLESTextureCache;
 
 #[cfg(feature = "objc")]
-pub type CVEAGLContext = *mut Object;
+pub type CVEAGLContext = *mut NSObject;
 #[cfg(not(feature = "objc"))]
 pub type CVEAGLContext = *mut c_void;
 
