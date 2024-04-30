@@ -4,7 +4,7 @@ description = "Safe bindings to CoreVideo framework"
 homepage = "https://github.com/libark/core-video"
 repository = "https://github.com/libark/core-video"
 documentation = "https://docs.rs/core-video"
-version = "0.1.8"
+version = "0.1.9"
 authors = ["Zhou Wei <zhouwei@ehom.net>"]
 license = "MIT OR Apache-2.0"
 categories = ["multimedia::video", "os::macos-apis"]
@@ -18,7 +18,7 @@ core-graphics = { version = "0.23", default-features = false }
 foreign-types = "0.5"
 io-surface = { version = "0.15", default-features = false }
 libc = "0.2"
-metal = { version = "0.27", optional = true }
+metal = { version = "0.28", optional = true }
 objc = { version = "0.2", optional = true }
 
 [features]
@@ -28,7 +28,7 @@ link = ["core-foundation/link", "core-graphics/link"]
 
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["display-link"]
+features = ["display-link", "metal"]
 default-target = "x86_64-apple-darwin"
 targets = [
     "aarch64-apple-darwin",

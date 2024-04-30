@@ -11,6 +11,7 @@ use core_graphics::{
     sys::CGColorSpaceRef,
 };
 use foreign_types::ForeignType;
+use libc::c_void;
 
 use crate::buffer::{CVBuffer, CVBufferRef, CVBufferRelease, CVBufferRetain, TCVBuffer};
 
@@ -491,6 +492,28 @@ pub trait TCVImageBuffer: TCVBuffer {
         let reference = self.as_concrete_TypeRef().as_void_ptr() as CVImageBufferRef;
         mem::forget(self);
         unsafe { CVImageBuffer::wrap_under_create_rule(reference) }
+    }
+}
+
+impl CVImageBuffer {
+    pub fn downcast<T: TCVImageBuffer>(&self) -> Option<T> {
+        if self.instance_of::<T>() {
+            unsafe { Some(T::wrap_under_get_rule(T::Ref::from_void_ptr(self.as_concrete_TypeRef() as *const c_void))) }
+        } else {
+            None
+        }
+    }
+
+    pub fn downcast_into<T: TCVImageBuffer>(self) -> Option<T> {
+        if self.instance_of::<T>() {
+            unsafe {
+                let reference = T::Ref::from_void_ptr(self.as_concrete_TypeRef() as *const c_void);
+                mem::forget(self);
+                Some(T::wrap_under_create_rule(reference))
+            }
+        } else {
+            None
+        }
     }
 }
 
