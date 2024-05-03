@@ -3,7 +3,7 @@ use crate::libc::c_double;
 pub type CVOptionFlags = u64;
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct CVSMPTETime {
     pub subframes: i16,
     pub subframeDivisor: i16,
@@ -17,7 +17,7 @@ pub struct CVSMPTETime {
 }
 
 #[repr(u32)]
-#[derive(PartialEq, Eq, Debug, Clone, Copy)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CVSMPTETimeType {
     kCVSMPTETimeType24       = 0,
     kCVSMPTETimeType25       = 1,
@@ -30,20 +30,20 @@ pub enum CVSMPTETimeType {
 }
 
 #[repr(u32)]
-#[derive(PartialEq, Eq, Debug, Clone, Copy)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CVSMPTETimeFlags {
     kCVSMPTETimeValid   = (1 << 0),
     kCVSMPTETimeRunning = (1 << 1),
 }
 
 #[repr(i32)]
-#[derive(PartialEq, Eq, Debug, Clone, Copy)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CVTimeFlags {
     kCVTimeIsIndefinite = (1 << 0),
 }
 
 #[repr(C)]
-#[derive(Debug, Clone, Default)]
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub struct CVTime {
     pub timeValue: i64,
     pub timeScale: i32,
@@ -51,7 +51,7 @@ pub struct CVTime {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct CVTimeStamp {
     pub version: u32,
     pub videoTimeScale: i32,
@@ -65,7 +65,7 @@ pub struct CVTimeStamp {
 }
 
 #[repr(u64)]
-#[derive(PartialEq, Eq, Debug, Clone, Copy)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CVTimeStampFlags {
     kCVTimeStampVideoTimeValid     = (1 << 0),
     kCVTimeStampHostTimeValid      = (1 << 1),
