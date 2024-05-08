@@ -6,11 +6,9 @@ use core_foundation::{
     string::{CFString, CFStringRef},
 };
 use core_graphics::{
-    color_space::CGColorSpace,
+    color_space::{CGColorSpace, CGColorSpaceRef},
     geometry::{CGRect, CGSize},
-    sys::CGColorSpaceRef,
 };
-use foreign_types::ForeignType;
 use libc::c_void;
 
 use crate::buffer::{CVBuffer, CVBufferRef, CVBufferRelease, CVBufferRetain, TCVBuffer};
@@ -553,7 +551,7 @@ impl CVImageBuffer {
             if color_space.is_null() {
                 None
             } else {
-                Some(CGColorSpace::from_ptr(color_space))
+                Some(TCFType::wrap_under_create_rule(color_space))
             }
         }
     }
@@ -565,7 +563,7 @@ pub fn create_color_space_from_attachments(attachments: &CFDictionary<CFString, 
         if color_space.is_null() {
             None
         } else {
-            Some(CGColorSpace::from_ptr(color_space))
+            Some(TCFType::wrap_under_create_rule(color_space))
         }
     }
 }
