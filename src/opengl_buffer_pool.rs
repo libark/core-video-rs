@@ -73,6 +73,7 @@ impl_TCFType!(CVOpenGLBufferPool, CVOpenGLBufferPoolRef, CVOpenGLBufferPoolGetTy
 impl_CFTypeDescription!(CVOpenGLBufferPool);
 
 impl CVOpenGLBufferPool {
+    #[inline]
     pub fn new(
         pool_attributes: Option<&CFDictionary<CFString, CFType>>,
         opengl_buffer_attributes: Option<&CFDictionary<CFString, CFType>>,
@@ -93,6 +94,7 @@ impl CVOpenGLBufferPool {
         }
     }
 
+    #[inline]
     pub fn get_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
             let attributes = CVOpenGLBufferPoolGetAttributes(self.as_concrete_TypeRef());
@@ -104,6 +106,7 @@ impl CVOpenGLBufferPool {
         }
     }
 
+    #[inline]
     pub fn get_opengl_buffer_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
             let attributes = CVOpenGLBufferPoolGetOpenGLBufferAttributes(self.as_concrete_TypeRef());
@@ -115,6 +118,7 @@ impl CVOpenGLBufferPool {
         }
     }
 
+    #[inline]
     pub fn create_open_gl_buffer(&self) -> Result<CVOpenGLBuffer, CVReturn> {
         let mut buffer: CVOpenGLBufferRef = null_mut();
         let status = unsafe { CVOpenGLBufferPoolCreateOpenGLBuffer(kCFAllocatorDefault, self.as_concrete_TypeRef(), &mut buffer) };

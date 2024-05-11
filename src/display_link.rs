@@ -73,6 +73,7 @@ impl_TCFType!(CVDisplayLink, CVDisplayLinkRef, CVDisplayLinkGetTypeID);
 impl_CFTypeDescription!(CVDisplayLink);
 
 impl CVDisplayLink {
+    #[inline]
     pub fn from_cg_displays(display_array: &[CGDirectDisplayID]) -> Result<CVDisplayLink, CVReturn> {
         let mut display_link: CVDisplayLinkRef = null_mut();
         unsafe {
@@ -85,6 +86,7 @@ impl CVDisplayLink {
         }
     }
 
+    #[inline]
     pub fn from_opengl_display_mask(mask: CGOpenGLDisplayMask) -> Result<CVDisplayLink, CVReturn> {
         let mut display_link: CVDisplayLinkRef = null_mut();
         unsafe {
@@ -97,6 +99,7 @@ impl CVDisplayLink {
         }
     }
 
+    #[inline]
     pub fn from_cg_display(display_id: CGDirectDisplayID) -> Result<CVDisplayLink, CVReturn> {
         let mut display_link: CVDisplayLinkRef = null_mut();
         unsafe {
@@ -109,6 +112,7 @@ impl CVDisplayLink {
         }
     }
 
+    #[inline]
     pub fn from_active_cg_displays() -> Result<CVDisplayLink, CVReturn> {
         let mut display_link: CVDisplayLinkRef = null_mut();
         unsafe {
@@ -121,6 +125,7 @@ impl CVDisplayLink {
         }
     }
 
+    #[inline]
     pub fn set_current_cg_display(&self, display_id: CGDirectDisplayID) -> Result<(), CVReturn> {
         let result = unsafe { CVDisplayLinkSetCurrentCGDisplay(self.as_concrete_TypeRef(), display_id) };
         if result == kCVReturnSuccess {
@@ -130,6 +135,7 @@ impl CVDisplayLink {
         }
     }
 
+    #[inline]
     pub unsafe fn set_current_cg_display_from_opengl_context(
         &self,
         cgl_context: CGLContextObj,
@@ -143,6 +149,7 @@ impl CVDisplayLink {
         }
     }
 
+    #[inline]
     pub fn get_current_cg_display(&self) -> CGDirectDisplayID {
         unsafe { CVDisplayLinkGetCurrentCGDisplay(self.as_concrete_TypeRef()) }
     }
@@ -185,6 +192,7 @@ impl CVDisplayLink {
         }
     }
 
+    #[inline]
     pub fn start(&self) -> Result<(), CVReturn> {
         let result = unsafe { CVDisplayLinkStart(self.as_concrete_TypeRef()) };
         if result == kCVReturnSuccess {
@@ -194,6 +202,7 @@ impl CVDisplayLink {
         }
     }
 
+    #[inline]
     pub fn stop(&self) -> Result<(), CVReturn> {
         let result = unsafe { CVDisplayLinkStop(self.as_concrete_TypeRef()) };
         if result == kCVReturnSuccess {
@@ -203,22 +212,27 @@ impl CVDisplayLink {
         }
     }
 
+    #[inline]
     pub fn get_nominal_output_video_refresh_period(&self) -> CVTime {
         unsafe { CVDisplayLinkGetNominalOutputVideoRefreshPeriod(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn get_output_video_latency(&self) -> CVTime {
         unsafe { CVDisplayLinkGetOutputVideoLatency(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn get_actual_output_video_refresh_period(&self) -> CVTime {
         unsafe { CVDisplayLinkGetActualOutputVideoRefreshPeriod(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn is_running(&self) -> bool {
         unsafe { CVDisplayLinkIsRunning(self.as_concrete_TypeRef()) != 0 }
     }
 
+    #[inline]
     pub fn get_current_time(&self) -> Result<CVTime, CVReturn> {
         let mut outTime = CVTime::default();
         let result = unsafe { CVDisplayLinkGetCurrentTime(self.as_concrete_TypeRef(), &mut outTime) };
@@ -229,6 +243,7 @@ impl CVDisplayLink {
         }
     }
 
+    #[inline]
     pub fn translate_time(&self, in_time: &CVTime) -> Result<CVTime, CVReturn> {
         let mut out_time = CVTime::default();
         let result = unsafe { CVDisplayLinkTranslateTime(self.as_concrete_TypeRef(), in_time, &mut out_time) };

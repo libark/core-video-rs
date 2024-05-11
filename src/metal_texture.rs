@@ -60,6 +60,7 @@ impl_TCFType!(CVMetalTexture, CVMetalTextureRef, CVMetalTextureGetTypeID);
 impl_CFTypeDescription!(CVMetalTexture);
 
 impl CVMetalTexture {
+    #[inline]
     pub fn get_texture(&self) -> Option<Texture> {
         unsafe {
             let texture = CVMetalTextureGetTexture(self.as_concrete_TypeRef());
@@ -71,10 +72,12 @@ impl CVMetalTexture {
         }
     }
 
+    #[inline]
     pub fn is_flipped(&self) -> bool {
         unsafe { CVMetalTextureIsFlipped(self.as_concrete_TypeRef()) != 0 }
     }
 
+    #[inline]
     pub fn get_clean_tex_coords(&self) -> (f32, f32, f32, f32) {
         let mut lower_left = 0.0;
         let mut lower_right = 0.0;

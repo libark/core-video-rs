@@ -348,6 +348,7 @@ impl_TCFType!(CVPixelBuffer, CVPixelBufferRef, CVPixelBufferGetTypeID);
 impl_CFTypeDescription!(CVPixelBuffer);
 
 impl CVPixelBuffer {
+    #[inline]
     pub fn new(
         pixel_format: OSType,
         width: usize,
@@ -372,6 +373,7 @@ impl CVPixelBuffer {
         }
     }
 
+    #[inline]
     pub unsafe fn new_with_bytes(
         pixel_format: OSType,
         width: usize,
@@ -404,6 +406,7 @@ impl CVPixelBuffer {
         }
     }
 
+    #[inline]
     pub unsafe fn new_with_planar_bytes(
         pixel_format: OSType,
         width: usize,
@@ -453,58 +456,72 @@ impl CVPixelBuffer {
         }
     }
 
+    #[inline]
     pub fn lock_base_address(&self, options: CVPixelBufferLockFlags) -> CVReturn {
         unsafe { CVPixelBufferLockBaseAddress(self.as_concrete_TypeRef(), options) }
     }
 
+    #[inline]
     pub fn unlock_base_address(&self, options: CVPixelBufferLockFlags) -> CVReturn {
         unsafe { CVPixelBufferUnlockBaseAddress(self.as_concrete_TypeRef(), options) }
     }
 
+    #[inline]
     pub fn get_width(&self) -> usize {
         unsafe { CVPixelBufferGetWidth(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn get_height(&self) -> usize {
         unsafe { CVPixelBufferGetHeight(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn get_pixel_format(&self) -> OSType {
         unsafe { CVPixelBufferGetPixelFormatType(self.as_concrete_TypeRef()) }
     }
 
-    pub fn get_base_address(&self) -> *mut c_void {
+    #[inline]
+    pub unsafe fn get_base_address(&self) -> *mut c_void {
         unsafe { CVPixelBufferGetBaseAddress(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn get_bytes_per_row(&self) -> usize {
         unsafe { CVPixelBufferGetBytesPerRow(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn is_planar(&self) -> bool {
         unsafe { CVPixelBufferIsPlanar(self.as_concrete_TypeRef()) != 0 }
     }
 
+    #[inline]
     pub fn get_plane_count(&self) -> usize {
         unsafe { CVPixelBufferGetPlaneCount(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn get_width_of_plane(&self, plane_index: usize) -> usize {
         unsafe { CVPixelBufferGetWidthOfPlane(self.as_concrete_TypeRef(), plane_index) }
     }
 
+    #[inline]
     pub fn get_height_of_plane(&self, plane_index: usize) -> usize {
         unsafe { CVPixelBufferGetHeightOfPlane(self.as_concrete_TypeRef(), plane_index) }
     }
 
-    pub fn get_base_address_of_plane(&self, plane_index: usize) -> *mut c_void {
+    #[inline]
+    pub unsafe fn get_base_address_of_plane(&self, plane_index: usize) -> *mut c_void {
         unsafe { CVPixelBufferGetBaseAddressOfPlane(self.as_concrete_TypeRef(), plane_index) }
     }
 
+    #[inline]
     pub fn get_bytes_per_row_of_plane(&self, plane_index: usize) -> usize {
         unsafe { CVPixelBufferGetBytesPerRowOfPlane(self.as_concrete_TypeRef(), plane_index) }
     }
 
+    #[inline]
     pub fn get_extended_pixels(&self) -> (usize, usize, usize, usize) {
         unsafe {
             let mut left = 0;
@@ -516,10 +533,12 @@ impl CVPixelBuffer {
         }
     }
 
+    #[inline]
     pub fn fill_extended_pixels(&self) -> CVReturn {
         unsafe { CVPixelBufferFillExtendedPixels(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn copy_creation_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
             let attributes = CVPixelBufferCopyCreationAttributes(self.as_concrete_TypeRef());

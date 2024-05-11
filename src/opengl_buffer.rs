@@ -79,6 +79,7 @@ impl_TCFType!(CVOpenGLBuffer, CVOpenGLBufferRef, CVOpenGLBufferGetTypeID);
 impl_CFTypeDescription!(CVOpenGLBuffer);
 
 impl CVOpenGLBuffer {
+    #[inline]
     pub fn new(width: size_t, height: size_t, attributes: Option<&CFDictionary<CFString, CFType>>) -> Result<CVOpenGLBuffer, CVReturn> {
         let mut buffer: CVOpenGLBufferRef = null_mut();
         let status = unsafe {
@@ -91,6 +92,7 @@ impl CVOpenGLBuffer {
         }
     }
 
+    #[inline]
     pub fn get_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
             let attributes = CVOpenGLBufferGetAttributes(self.as_concrete_TypeRef());
@@ -102,6 +104,7 @@ impl CVOpenGLBuffer {
         }
     }
 
+    #[inline]
     pub unsafe fn attach(&self, cgl_context: CGLContextObj, face: GLenum, level: GLint, screen: GLint) -> Result<(), CVReturn> {
         let status = unsafe { CVOpenGLBufferAttach(self.as_concrete_TypeRef(), cgl_context, face, level, screen) };
         if status == kCVReturnSuccess {

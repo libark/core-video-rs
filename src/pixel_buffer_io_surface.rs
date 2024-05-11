@@ -58,6 +58,7 @@ impl From<CVPixelBufferIOSurfaceKeys> for CFString {
 }
 
 impl CVPixelBuffer {
+    #[inline]
     pub fn from_io_surface(io_surface: &IOSurface, options: Option<&CFDictionary<CFString, CFType>>) -> Result<CVPixelBuffer, CVReturn> {
         let mut pixel_buffer: CVPixelBufferRef = null_mut();
         let status = unsafe {
@@ -75,6 +76,7 @@ impl CVPixelBuffer {
         }
     }
 
+    #[inline]
     pub fn get_io_surface(&self) -> Option<IOSurface> {
         unsafe {
             let surface = CVPixelBufferGetIOSurface(self.as_concrete_TypeRef());

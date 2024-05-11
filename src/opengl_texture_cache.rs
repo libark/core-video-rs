@@ -103,6 +103,7 @@ impl_TCFType!(CVOpenGLTextureCache, CVOpenGLTextureCacheRef, CVOpenGLTextureCach
 impl_CFTypeDescription!(CVOpenGLTextureCache);
 
 impl CVOpenGLTextureCache {
+    #[inline]
     pub unsafe fn new(
         cache_attributes: Option<&CFDictionary<CFString, CFString>>,
         cgl_context: CGLContextObj,
@@ -127,6 +128,7 @@ impl CVOpenGLTextureCache {
         }
     }
 
+    #[inline]
     pub fn create_texture_from_image(
         &self,
         source_image: &CVImageBuffer,
@@ -149,6 +151,7 @@ impl CVOpenGLTextureCache {
         }
     }
 
+    #[inline]
     pub fn flush(&self, options: CVOptionFlags) {
         unsafe { CVOpenGLTextureCacheFlush(self.as_concrete_TypeRef(), options) }
     }

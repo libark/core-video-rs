@@ -60,6 +60,7 @@ impl_TCFType!(CVOpenGLESTextureCache, CVOpenGLESTextureCacheRef, CVOpenGLESTextu
 impl_CFTypeDescription!(CVOpenGLESTextureCache);
 
 impl CVOpenGLESTextureCache {
+    #[inline]
     pub fn new(
         cache_attributes: Option<&CFDictionary<CFString, CFType>>,
         eagl_context: CVEAGLContext,
@@ -82,6 +83,7 @@ impl CVOpenGLESTextureCache {
         }
     }
 
+    #[inline]
     pub fn create_texture_from_image(
         &self,
         source_image: &CVImageBuffer,
@@ -118,6 +120,7 @@ impl CVOpenGLESTextureCache {
         }
     }
 
+    #[inline]
     pub fn flush(&self, options: CVOptionFlags) {
         unsafe { CVOpenGLESTextureCacheFlush(self.as_concrete_TypeRef(), options) }
     }

@@ -71,6 +71,7 @@ impl_TCFType!(CVMetalTextureCache, CVMetalTextureCacheRef, CVMetalTextureCacheGe
 impl_CFTypeDescription!(CVMetalTextureCache);
 
 impl CVMetalTextureCache {
+    #[inline]
     pub fn new(
         cache_attributes: Option<&CFDictionary<CFString, CFType>>,
         metal_device: metal::Device,
@@ -93,6 +94,7 @@ impl CVMetalTextureCache {
         }
     }
 
+    #[inline]
     pub fn create_texture_from_image(
         &self,
         source_image: CVImageBufferRef,
@@ -123,6 +125,7 @@ impl CVMetalTextureCache {
         }
     }
 
+    #[inline]
     pub fn flush(&self, options: CVOptionFlags) {
         unsafe { CVMetalTextureCacheFlush(self.as_concrete_TypeRef(), options) }
     }

@@ -494,6 +494,7 @@ pub trait TCVImageBuffer: TCVBuffer {
 }
 
 impl CVImageBuffer {
+    #[inline]
     pub fn downcast<T: TCVImageBuffer>(&self) -> Option<T> {
         if self.instance_of::<T>() {
             unsafe { Some(T::wrap_under_get_rule(T::Ref::from_void_ptr(self.as_concrete_TypeRef() as *const c_void))) }
@@ -502,6 +503,7 @@ impl CVImageBuffer {
         }
     }
 
+    #[inline]
     pub fn downcast_into<T: TCVImageBuffer>(self) -> Option<T> {
         if self.instance_of::<T>() {
             unsafe {
@@ -516,10 +518,12 @@ impl CVImageBuffer {
 }
 
 impl CVImageBuffer {
+    #[inline]
     pub fn as_buffer(&self) -> CVBuffer {
         unsafe { CVBuffer::wrap_under_get_rule(self.as_concrete_TypeRef() as CVBufferRef) }
     }
 
+    #[inline]
     pub fn into_buffer(self) -> CVBuffer
     where
         Self: Sized,
@@ -529,22 +533,27 @@ impl CVImageBuffer {
         unsafe { CVBuffer::wrap_under_create_rule(reference) }
     }
 
+    #[inline]
     pub fn get_encoded_size(&self) -> CGSize {
         unsafe { CVImageBufferGetEncodedSize(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn get_display_size(&self) -> CGSize {
         unsafe { CVImageBufferGetDisplaySize(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn get_clean_rect(&self) -> CGRect {
         unsafe { CVImageBufferGetCleanRect(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn is_flipped(&self) -> bool {
         unsafe { CVImageBufferIsFlipped(self.as_concrete_TypeRef()) != 0 }
     }
 
+    #[inline]
     pub fn get_color_space(&self) -> Option<CGColorSpace> {
         unsafe {
             let color_space = CVImageBufferGetColorSpace(self.as_concrete_TypeRef());

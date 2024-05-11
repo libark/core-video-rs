@@ -90,6 +90,7 @@ impl_TCFType!(CVPixelBufferPool, CVPixelBufferPoolRef, CVPixelBufferPoolGetTypeI
 impl_CFTypeDescription!(CVPixelBufferPool);
 
 impl CVPixelBufferPool {
+    #[inline]
     pub fn new(
         pool_attributes: Option<&CFDictionary<CFString, CFType>>,
         pixel_buffer_attributes: Option<&CFDictionary<CFString, CFType>>,
@@ -110,6 +111,7 @@ impl CVPixelBufferPool {
         }
     }
 
+    #[inline]
     pub fn get_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
             let attributes = CVPixelBufferPoolGetAttributes(self.as_concrete_TypeRef());
@@ -121,6 +123,7 @@ impl CVPixelBufferPool {
         }
     }
 
+    #[inline]
     pub fn get_pixel_buffer_attributes(&self) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
             let attributes = CVPixelBufferPoolGetPixelBufferAttributes(self.as_concrete_TypeRef());
@@ -132,6 +135,7 @@ impl CVPixelBufferPool {
         }
     }
 
+    #[inline]
     pub fn create_pixel_buffer(&self) -> Result<CVPixelBuffer, CVReturn> {
         let mut pixel_buffer: CVPixelBufferRef = null_mut();
         let status = unsafe { CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, self.as_concrete_TypeRef(), &mut pixel_buffer) };
@@ -142,6 +146,7 @@ impl CVPixelBufferPool {
         }
     }
 
+    #[inline]
     pub fn create_pixel_buffer_with_aux_attributes(&self, auxAttributes: Option<&CFDictionary<CFString, CFType>>) -> Result<CVPixelBuffer, CVReturn> {
         let mut pixel_buffer: CVPixelBufferRef = null_mut();
         let status = unsafe {

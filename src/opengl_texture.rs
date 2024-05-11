@@ -39,18 +39,22 @@ impl_TCFType!(CVOpenGLTexture, CVOpenGLTextureRef, CVOpenGLTextureGetTypeID);
 impl_CFTypeDescription!(CVOpenGLTexture);
 
 impl CVOpenGLTexture {
+    #[inline]
     pub fn get_target(&self) -> GLenum {
         unsafe { CVOpenGLTextureGetTarget(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn get_name(&self) -> GLuint {
         unsafe { CVOpenGLTextureGetName(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn is_flipped(&self) -> bool {
         unsafe { CVOpenGLTextureIsFlipped(self.as_concrete_TypeRef()) != 0 }
     }
 
+    #[inline]
     pub fn get_clean_tex_coords(&self) -> (f32, f32, f32, f32) {
         let mut lower_left = 0.0;
         let mut lower_right = 0.0;

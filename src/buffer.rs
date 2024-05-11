@@ -144,12 +144,14 @@ impl CVBuffer {
 }
 
 impl Clone for CVBuffer {
+    #[inline]
     fn clone(&self) -> CVBuffer {
         unsafe { CVBuffer::wrap_under_get_rule(self.0) }
     }
 }
 
 impl PartialEq for CVBuffer {
+    #[inline]
     fn eq(&self, other: &CVBuffer) -> bool {
         self.as_CFType().eq(&other.as_CFType())
     }
@@ -177,6 +179,7 @@ pub trait TCVBuffer: TCFType {
 }
 
 impl CVBuffer {
+    #[inline]
     pub fn downcast<T: TCVBuffer>(&self) -> Option<T> {
         if self.instance_of::<T>() {
             unsafe { Some(T::wrap_under_get_rule(T::Ref::from_void_ptr(self.as_concrete_TypeRef() as *const c_void))) }
@@ -185,6 +188,7 @@ impl CVBuffer {
         }
     }
 
+    #[inline]
     pub fn downcast_into<T: TCVBuffer>(self) -> Option<T> {
         if self.instance_of::<T>() {
             unsafe {
@@ -199,12 +203,14 @@ impl CVBuffer {
 }
 
 impl CVBuffer {
+    #[inline]
     pub fn set_attachment(&self, key: &CFString, value: &CFType, attachment_mode: CVAttachmentMode) {
         unsafe {
             CVBufferSetAttachment(self.as_concrete_TypeRef(), key.as_concrete_TypeRef(), value.as_concrete_TypeRef(), attachment_mode);
         }
     }
 
+    #[inline]
     pub fn get_attachment(&self, key: &CFString, attachment_mode: &mut CVAttachmentMode) -> Option<CFType> {
         unsafe {
             let value = CVBufferGetAttachment(self.as_concrete_TypeRef(), key.as_concrete_TypeRef(), attachment_mode);
@@ -216,18 +222,21 @@ impl CVBuffer {
         }
     }
 
+    #[inline]
     pub fn remove_attachment(&self, key: &CFString) {
         unsafe {
             CVBufferRemoveAttachment(self.as_concrete_TypeRef(), key.as_concrete_TypeRef());
         }
     }
 
+    #[inline]
     pub fn remove_all_attachments(&self) {
         unsafe {
             CVBufferRemoveAllAttachments(self.as_concrete_TypeRef());
         }
     }
 
+    #[inline]
     pub fn get_attachments(&self, attachment_mode: CVAttachmentMode) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
             let attachments = CVBufferGetAttachments(self.as_concrete_TypeRef(), attachment_mode);
@@ -239,18 +248,21 @@ impl CVBuffer {
         }
     }
 
+    #[inline]
     pub fn set_attachments(&self, the_attachments: &CFDictionary<CFString, CFType>, attachment_mode: CVAttachmentMode) {
         unsafe {
             CVBufferSetAttachments(self.as_concrete_TypeRef(), the_attachments.as_concrete_TypeRef(), attachment_mode);
         }
     }
 
+    #[inline]
     pub fn propagate_attachments(&self, destination_buffer: &CVBuffer) {
         unsafe {
             CVBufferPropagateAttachments(self.as_concrete_TypeRef(), destination_buffer.as_concrete_TypeRef());
         }
     }
 
+    #[inline]
     pub fn copy_attachments(&self, attachment_mode: &mut CVAttachmentMode) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
             let attachments = CVBufferCopyAttachments(self.as_concrete_TypeRef(), attachment_mode);
@@ -262,6 +274,7 @@ impl CVBuffer {
         }
     }
 
+    #[inline]
     pub fn copy_attachment(&self, key: &CFString, attachment_mode: &mut CVAttachmentMode) -> Option<CFType> {
         unsafe {
             let attachment = CVBufferCopyAttachment(self.as_concrete_TypeRef(), key.as_concrete_TypeRef(), attachment_mode);
@@ -273,6 +286,7 @@ impl CVBuffer {
         }
     }
 
+    #[inline]
     pub fn has_attachment(&self, key: &CFString) -> bool {
         unsafe { CVBufferHasAttachment(self.as_concrete_TypeRef(), key.as_concrete_TypeRef()) != 0 }
     }

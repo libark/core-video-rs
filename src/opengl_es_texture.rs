@@ -32,18 +32,22 @@ impl_TCFType!(CVOpenGLESTexture, CVOpenGLESTextureRef, CVOpenGLESTextureGetTypeI
 impl_CFTypeDescription!(CVOpenGLESTexture);
 
 impl CVOpenGLESTexture {
+    #[inline]
     pub fn get_target(&self) -> GLenum {
         unsafe { CVOpenGLESTextureGetTarget(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn get_name(&self) -> GLuint {
         unsafe { CVOpenGLESTextureGetName(self.as_concrete_TypeRef()) }
     }
 
+    #[inline]
     pub fn is_flipped(&self) -> bool {
         unsafe { CVOpenGLESTextureIsFlipped(self.as_concrete_TypeRef()) != 0 }
     }
 
+    #[inline]
     pub fn get_clean_tex_coords(&self) -> (f32, f32, f32, f32) {
         let mut lower_left = 0.0;
         let mut lower_right = 0.0;
