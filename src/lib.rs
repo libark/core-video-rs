@@ -4,8 +4,6 @@ extern crate block;
 #[macro_use]
 extern crate core_foundation;
 extern crate core_graphics2 as core_graphics;
-#[cfg(feature = "foreign-types")]
-extern crate foreign_types;
 extern crate io_surface;
 extern crate libc;
 #[cfg(feature = "metal")]

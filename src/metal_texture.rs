@@ -2,8 +2,7 @@ use core_foundation::{
     base::{Boolean, CFTypeID, TCFType},
     string::{CFString, CFStringRef},
 };
-use foreign_types::ForeignType;
-use metal::{MTLTexture, Texture};
+use metal::{foreign_types::ForeignType, MTLTexture, Texture};
 
 use crate::{
     buffer::TCVBuffer,
